@@ -1,0 +1,21 @@
+{
+  "name": "amazon-doc-writer",
+  "version": "0.1.0",
+  "description": "Writes Amazon-style internal documents (PR/FAQ, technical design, mini technical design, analysis report) from a set of user-provided source files, following Amazon's narrative writing conventions.",
+  "author": {
+    "name": "louleowk",
+    "url": "https://github.com/louleowk"
+  },
+  "repository": "https://github.com/louleowk/awesome-plugins",
+  "agents": [
+    "./agents/amazon-doc-writer.md"
+  ],
+  "skills": [
+    "./skills/amazon-doc-writer",
+    "./skills/amazon-writing-style",
+    "./skills/writing-prfaq",
+    "./skills/writing-technical-design",
+    "./skills/writing-mini-technical-design",
+    "./skills/writing-analysis-report"
+  ]
+}
