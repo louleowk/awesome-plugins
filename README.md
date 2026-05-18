@@ -14,7 +14,8 @@ and its own agents, skills, hooks, and commands.
   hooks, skills, and slash commands.
 - **`plugins/amazon-doc-writer`** — writes Amazon-style internal documents
   (PR/FAQ, technical design / 6-pager, mini technical design, analysis
-  report) from a set of user-provided source files. Ships an
+  report, COE / Correction of Errors, OP1/OP2 annual plan narrative, WBR
+  narrative) from a set of user-provided source files. Ships an
   `amazon-doc-writer` agent plus per-doc-type skills and a shared
   `amazon-writing-style` skill.
 
@@ -52,7 +53,10 @@ and its own agents, skills, hooks, and commands.
             ├── writing-prfaq/SKILL.md
             ├── writing-technical-design/SKILL.md
             ├── writing-mini-technical-design/SKILL.md
-            └── writing-analysis-report/SKILL.md
+            ├── writing-analysis-report/SKILL.md
+            ├── writing-coe/SKILL.md
+            ├── writing-op1-narrative/SKILL.md
+            └── writing-wbr-narrative/SKILL.md
 ```
 
 ## Adding new plugins
