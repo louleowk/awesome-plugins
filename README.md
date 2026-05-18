@@ -2,30 +2,46 @@
 
 Collection repository for Claude Code plugins.
 
-This repository is intentionally organized as a **plugin collection**.  
-Each directory under `plugins/` is a standalone plugin package with its own manifest and skills.
+Each directory under `plugins/` is a standalone plugin package with its own
+`.claude-plugin/plugin.json` manifest and its own agents, skills, hooks, and
+commands.
 
 ## Plugins in this collection
 
-- `plugins/awesome-plugins-core`
-- `plugins/repo-curation`
+- **`plugins/plugin-creator`** — scaffolds new Claude Code plugins. Ships a
+  self-contained `plugin-creator` agent plus skills for authoring agents,
+  hooks, skills, and slash commands.
+
+## Install
+
+```text
+/plugin marketplace add louleowk/awesome-plugins
+/plugin install plugin-creator
+```
 
 ## Collection structure
 
 ```text
 .
 └── plugins/
-    ├── awesome-plugins-core/
-    │   ├── .claude-plugin/plugin.json
-    │   └── skills/awesome-plugins/SKILL.md
-    └── repo-curation/
+    └── plugin-creator/
         ├── .claude-plugin/plugin.json
-        └── skills/repo-curation/SKILL.md
+        ├── agents/
+        │   └── plugin-creator.md
+        └── skills/
+            ├── plugin-creator/SKILL.md
+            ├── writing-agents/SKILL.md
+            ├── writing-hooks/SKILL.md
+            ├── writing-skills/SKILL.md
+            └── writing-commands/SKILL.md
 ```
 
 ## Adding new plugins
 
-1. Create `plugins/<plugin-name>/`
-2. Add `.claude-plugin/plugin.json`
-3. Add one or more skills under `skills/<skill-name>/SKILL.md`
-4. Add the plugin to the list above
+1. Create `plugins/<plugin-name>/`.
+2. Add `.claude-plugin/plugin.json` (see `plugins/plugin-creator` for a
+   reference).
+3. Add any of `agents/`, `commands/`, `hooks/`, `skills/` the plugin needs.
+4. Add the plugin to the list above.
+
+The `plugin-creator` plugin can do all of the above for you.
