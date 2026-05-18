@@ -1,7 +1,7 @@
 {
-  "name": "awesome-plugins",
+  "name": "awesome-plugins-core",
   "version": "0.1.0",
-  "description": "Starter Claude Code plugin repository with a base skill.",
+  "description": "Core workflow plugin for managing plugin repositories.",
   "author": {
     "name": "louleowk",
     "url": "https://github.com/louleowk"

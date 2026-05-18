@@ -1,28 +1,31 @@
 # awesome-plugins
 
-Starter Claude Code plugin repository.
+Collection repository for Claude Code plugins.
 
-## Claude Code plugin files
+This repository is intentionally organized as a **plugin collection**.  
+Each directory under `plugins/` is a standalone plugin package with its own manifest and skills.
 
-- `.claude-plugin/plugin.json` - plugin manifest
-- `skills/awesome-plugins/SKILL.md` - starter skill
+## Plugins in this collection
 
-## Install in Claude Code
+- `plugins/awesome-plugins-core`
+- `plugins/repo-curation`
 
-Run these commands in Claude Code CLI:
-
-```text
-/plugin marketplace add louleowk/awesome-plugins
-/plugin install awesome-plugins
-```
-
-## Repository structure
+## Collection structure
 
 ```text
 .
-├── .claude-plugin/
-│   └── plugin.json
-└── skills/
-    └── awesome-plugins/
-        └── SKILL.md
+└── plugins/
+    ├── awesome-plugins-core/
+    │   ├── .claude-plugin/plugin.json
+    │   └── skills/awesome-plugins/SKILL.md
+    └── repo-curation/
+        ├── .claude-plugin/plugin.json
+        └── skills/repo-curation/SKILL.md
 ```
+
+## Adding new plugins
+
+1. Create `plugins/<plugin-name>/`
+2. Add `.claude-plugin/plugin.json`
+3. Add one or more skills under `skills/<skill-name>/SKILL.md`
+4. Add the plugin to the list above
