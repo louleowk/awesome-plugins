@@ -1,0 +1,15 @@
+{
+  "name": "awesome-plugins",
+  "owner": {
+    "name": "louleowk",
+    "url": "https://github.com/louleowk"
+  },
+  "plugins": [
+    {
+      "name": "plugin-creator",
+      "version": "0.1.0",
+      "source": "./plugins/plugin-creator",
+      "description": "Scaffolds new Claude Code plugins (agents, hooks, skills, commands) following the official Claude Code plugin guidelines."
+    }
+  ]
+}
