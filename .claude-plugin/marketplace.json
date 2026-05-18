@@ -10,6 +10,12 @@
       "version": "0.1.0",
       "source": "./plugins/plugin-creator",
       "description": "Scaffolds new Claude Code plugins (agents, hooks, skills, commands) following the official Claude Code plugin guidelines."
+    },
+    {
+      "name": "amazon-doc-writer",
+      "version": "0.1.0",
+      "source": "./plugins/amazon-doc-writer",
+      "description": "Writes Amazon-style internal documents (PR/FAQ, technical design, mini technical design, analysis report) from a set of user-provided source files, following Amazon's narrative writing conventions."
     }
   ]
 }

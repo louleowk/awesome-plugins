@@ -12,6 +12,11 @@ and its own agents, skills, hooks, and commands.
 - **`plugins/plugin-creator`** — scaffolds new Claude Code plugins. Ships a
   self-contained `plugin-creator` agent plus skills for authoring agents,
   hooks, skills, and slash commands.
+- **`plugins/amazon-doc-writer`** — writes Amazon-style internal documents
+  (PR/FAQ, technical design / 6-pager, mini technical design, analysis
+  report) from a set of user-provided source files. Ships an
+  `amazon-doc-writer` agent plus per-doc-type skills and a shared
+  `amazon-writing-style` skill.
 
 ## Install
 
@@ -27,16 +32,27 @@ and its own agents, skills, hooks, and commands.
 ├── .claude-plugin/
 │   └── marketplace.json
 └── plugins/
-    └── plugin-creator/
+    ├── plugin-creator/
+    │   ├── .claude-plugin/plugin.json
+    │   ├── agents/
+    │   │   └── plugin-creator.md
+    │   └── skills/
+    │       ├── plugin-creator/SKILL.md
+    │       ├── writing-agents/SKILL.md
+    │       ├── writing-hooks/SKILL.md
+    │       ├── writing-skills/SKILL.md
+    │       └── writing-commands/SKILL.md
+    └── amazon-doc-writer/
         ├── .claude-plugin/plugin.json
         ├── agents/
-        │   └── plugin-creator.md
+        │   └── amazon-doc-writer.md
         └── skills/
-            ├── plugin-creator/SKILL.md
-            ├── writing-agents/SKILL.md
-            ├── writing-hooks/SKILL.md
-            ├── writing-skills/SKILL.md
-            └── writing-commands/SKILL.md
+            ├── amazon-doc-writer/SKILL.md
+            ├── amazon-writing-style/SKILL.md
+            ├── writing-prfaq/SKILL.md
+            ├── writing-technical-design/SKILL.md
+            ├── writing-mini-technical-design/SKILL.md
+            └── writing-analysis-report/SKILL.md
 ```
 
 ## Adding new plugins
