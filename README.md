@@ -1,10 +1,11 @@
 # awesome-plugins
 
-Collection repository for Claude Code plugins.
+A [Claude Code plugin marketplace](https://docs.claude.com/en/docs/claude-code/plugin-marketplaces).
 
-Each directory under `plugins/` is a standalone plugin package with its own
-`.claude-plugin/plugin.json` manifest and its own agents, skills, hooks, and
-commands.
+The marketplace manifest lives at `.claude-plugin/marketplace.json` and lists
+every plugin published by this repository. Each directory under `plugins/` is a
+standalone plugin package with its own `.claude-plugin/plugin.json` manifest
+and its own agents, skills, hooks, and commands.
 
 ## Plugins in this collection
 
@@ -23,6 +24,8 @@ commands.
 
 ```text
 .
+├── .claude-plugin/
+│   └── marketplace.json
 └── plugins/
     └── plugin-creator/
         ├── .claude-plugin/plugin.json
@@ -42,6 +45,7 @@ commands.
 2. Add `.claude-plugin/plugin.json` (see `plugins/plugin-creator` for a
    reference).
 3. Add any of `agents/`, `commands/`, `hooks/`, `skills/` the plugin needs.
-4. Add the plugin to the list above.
+4. Add an entry for the plugin to `.claude-plugin/marketplace.json`.
+5. Add the plugin to the list above.
 
 The `plugin-creator` plugin can do all of the above for you.
