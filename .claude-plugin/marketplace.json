@@ -15,7 +15,7 @@
       "name": "amazon-doc-writer",
       "version": "0.1.0",
       "source": "./plugins/amazon-doc-writer",
-      "description": "Writes Amazon-style internal documents (PR/FAQ, technical design, mini technical design, analysis report) from a set of user-provided source files, following Amazon's narrative writing conventions."
+      "description": "Writes Amazon-style internal documents (PR/FAQ, technical design, mini design, analysis report, COE, OP1/OP2 narrative, WBR narrative) from a set of user-provided source files, following Amazon's narrative writing conventions."
     }
   ]
 }

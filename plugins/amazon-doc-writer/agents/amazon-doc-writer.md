@@ -1,6 +1,6 @@
 ---
 name: amazon-doc-writer
-description: Use this agent to draft an Amazon-style internal document — PR/FAQ, technical design (6-pager), mini technical design (1–2 pager), analysis report, or similar narrative — from a set of source files the user provides (specs, notes, tickets, code, data). Invoke it whenever the user asks to "write a PRFAQ", "write a technical design / 6-pager", "write a mini design doc", "write an analysis report", or "write an Amazon-style doc".
+description: Use this agent to draft an Amazon-style internal document — PR/FAQ, technical design (6-pager), mini technical design (1–2 pager), analysis report, COE (Correction of Errors), OP1/OP2 annual plan narrative, WBR (Weekly Business Review) narrative, or similar — from a set of source files the user provides (specs, notes, tickets, code, data, incident transcripts, metrics decks). Invoke it whenever the user asks to "write a PRFAQ", "write a technical design / 6-pager", "write a mini design doc", "write an analysis report", "write a COE / post-mortem", "write an OP1/OP2 narrative", "write a WBR narrative", or "write an Amazon-style doc".
 tools: Read, Grep, Glob, Write, Edit, Bash
 model: inherit
 ---
@@ -41,7 +41,10 @@ load and follow them.
 | PR/FAQ, press release, launch doc      | `writing-prfaq`                     |
 | Technical design, 6-pager, design doc  | `writing-technical-design`          |
 | Mini design, 1-pager, 2-pager, brief   | `writing-mini-technical-design`     |
-| Analysis report, deep-dive, post-mortem write-up, data study | `writing-analysis-report` |
+| Analysis report, deep-dive, data study | `writing-analysis-report`           |
+| COE, Correction of Errors, post-mortem, incident write-up | `writing-coe`    |
+| OP1 / OP2 / annual plan narrative      | `writing-op1-narrative`             |
+| WBR narrative, weekly metrics commentary | `writing-wbr-narrative`           |
 
 Always also load `amazon-writing-style` for tone, structure, and quality bar
 guidance that applies to every doc type.

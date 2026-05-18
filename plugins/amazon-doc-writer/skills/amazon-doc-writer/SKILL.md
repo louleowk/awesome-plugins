@@ -23,7 +23,10 @@ shared style skill.
 | Pitch a new product / feature working backwards from the customer        | PR/FAQ                    | `writing-prfaq`                    |
 | Propose / review a non-trivial technical solution (6-pager class)        | Technical Design          | `writing-technical-design`         |
 | Capture a small design decision or scoped change (1–2 pages)             | Mini Technical Design     | `writing-mini-technical-design`    |
-| Investigate data / a system / an incident and report findings            | Analysis Report           | `writing-analysis-report`          |
+| Investigate data / a system / a question and report findings             | Analysis Report           | `writing-analysis-report`          |
+| Document a customer-impacting incident with timeline, 5 Whys, action items | COE (Correction of Errors) | `writing-coe`                  |
+| Write the annual operating-plan narrative (goals, inputs, headcount)     | OP1 / OP2 Narrative       | `writing-op1-narrative`            |
+| Write the commentary that accompanies a weekly metrics deck              | WBR Narrative             | `writing-wbr-narrative`            |
 
 Always **also** load `amazon-writing-style` for the tone, structure, and quality
 bar that applies to every doc type.
@@ -49,6 +52,9 @@ bar that applies to every doc type.
 - `../writing-technical-design/SKILL.md`
 - `../writing-mini-technical-design/SKILL.md`
 - `../writing-analysis-report/SKILL.md`
+- `../writing-coe/SKILL.md`
+- `../writing-op1-narrative/SKILL.md`
+- `../writing-wbr-narrative/SKILL.md`
 
 ## Checklist
 
