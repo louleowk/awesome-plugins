@@ -1,0 +1,14 @@
+{
+  "name": "awesome-plugins",
+  "version": "0.1.0",
+  "description": "Starter Claude Code plugin repository with a base skill.",
+  "author": {
+    "name": "louleowk",
+    "url": "https://github.com/louleowk"
+  },
+  "repository": "https://github.com/louleowk/awesome-plugins",
+  "skills": [
+    "./skills/awesome-plugins"
+  ],
+  "agents": []
+}
