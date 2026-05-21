@@ -16,6 +16,12 @@
       "version": "0.1.0",
       "source": "./plugins/amazon-doc-writer",
       "description": "Writes Amazon-style internal documents (PR/FAQ, technical design, mini design, analysis report, COE, OP1/OP2 narrative, WBR narrative) from a set of user-provided source files, following Amazon's narrative writing conventions."
+    },
+    {
+      "name": "ai-tool-designer",
+      "version": "0.1.0",
+      "source": "./plugins/ai-tool-designer",
+      "description": "Researches the latest industry best practices and trends (via Google and other web sources) and designs Claude Code plugins, agents, and skills from those findings."
     }
   ]
 }
