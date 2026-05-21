@@ -18,6 +18,12 @@ and its own agents, skills, hooks, and commands.
   narrative) from a set of user-provided source files. Ships an
   `amazon-doc-writer` agent plus per-doc-type skills and a shared
   `amazon-writing-style` skill.
+- **`plugins/ai-tool-designer`** — researches the latest industry best
+  practices and trends (via Google and other web sources) and designs
+  Claude Code plugins, agents, and skills from those findings. Ships an
+  `ai-tool-designer` agent plus skills for researching best practices and
+  designing agents, skills, and plugins. Pairs well with `plugin-creator`,
+  which scaffolds the resulting design.
 
 ## Install
 
@@ -57,6 +63,16 @@ and its own agents, skills, hooks, and commands.
             ├── writing-coe/SKILL.md
             ├── writing-op1-narrative/SKILL.md
             └── writing-wbr-narrative/SKILL.md
+    └── ai-tool-designer/
+        ├── .claude-plugin/plugin.json
+        ├── agents/
+        │   └── ai-tool-designer.md
+        └── skills/
+            ├── ai-tool-designer/SKILL.md
+            ├── researching-best-practices/SKILL.md
+            ├── designing-agents/SKILL.md
+            ├── designing-skills/SKILL.md
+            └── designing-plugins/SKILL.md
 ```
 
 ## Adding new plugins

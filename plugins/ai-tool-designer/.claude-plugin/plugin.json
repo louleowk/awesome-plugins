@@ -1,0 +1,20 @@
+{
+  "name": "ai-tool-designer",
+  "version": "0.1.0",
+  "description": "Researches the latest industry best practices and trends (via Google and other web sources) and designs Claude Code plugins, agents, and skills from those findings.",
+  "author": {
+    "name": "louleowk",
+    "url": "https://github.com/louleowk"
+  },
+  "repository": "https://github.com/louleowk/awesome-plugins",
+  "agents": [
+    "./agents/ai-tool-designer.md"
+  ],
+  "skills": [
+    "./skills/ai-tool-designer",
+    "./skills/researching-best-practices",
+    "./skills/designing-agents",
+    "./skills/designing-skills",
+    "./skills/designing-plugins"
+  ]
+}
