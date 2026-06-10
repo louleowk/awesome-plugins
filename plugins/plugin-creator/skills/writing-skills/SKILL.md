@@ -68,3 +68,13 @@ Skills are registered by **directory**, not by file:
 - [ ] Body explains *when* and *how*, not just *what*.
 - [ ] Supporting files (if any) sit alongside `SKILL.md` and are linked.
 - [ ] Directory is listed in `plugin.json` `skills`.
+
+## Official docs (source of truth)
+
+If this skill conflicts with the official docs, the docs win — fetch them
+and flag this skill for an update.
+
+- Skills: https://code.claude.com/docs/en/skills
+- Plugins reference — Skills section (how `skills` directories are wired
+  into `plugin.json`, plugin-root single-skill layout, namespacing):
+  https://code.claude.com/docs/en/plugins-reference

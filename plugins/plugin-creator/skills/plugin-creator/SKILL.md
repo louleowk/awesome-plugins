@@ -57,3 +57,16 @@ Every path is relative to the plugin root and every referenced file must exist.
 - **Hook** — a deterministic shell command triggered by a Claude Code lifecycle
   event (`PreToolUse`, `PostToolUse`, `UserPromptSubmit`, `SessionStart`,
   `Stop`, `Notification`, ...).
+
+## Official docs (source of truth)
+
+If anything in this skill conflicts with the official Claude Code docs, the
+docs win — fetch them and flag the skill for an update.
+
+- Plugins overview: https://code.claude.com/docs/en/plugins
+- Plugins reference (manifest fields): https://code.claude.com/docs/en/plugins-reference
+- Plugin marketplaces: https://code.claude.com/docs/en/plugin-marketplaces
+- Subagents: https://code.claude.com/docs/en/sub-agents
+- Slash commands / skills (custom commands are now skills): https://code.claude.com/docs/en/skills
+- Hooks reference: https://code.claude.com/docs/en/hooks
+- Hooks guide (practical recipes): https://code.claude.com/docs/en/hooks-guide

@@ -65,3 +65,13 @@ Add the file to `plugin.json`:
 - [ ] Tool list is minimal and intentional (or omitted to inherit).
 - [ ] Body is a system prompt, not user-facing docs.
 - [ ] File is listed in `plugin.json` `agents`.
+
+## Official docs (source of truth)
+
+If this skill conflicts with the official docs, the docs win — fetch them
+and flag this skill for an update.
+
+- Subagents: https://code.claude.com/docs/en/sub-agents
+- Plugins reference — Agents section (how `agents` paths and plugin-only
+  restrictions like no `hooks` / `mcpServers` / `permissionMode` work):
+  https://code.claude.com/docs/en/plugins-reference

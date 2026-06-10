@@ -18,6 +18,13 @@ and its own agents, skills, hooks, and commands.
   narrative) from a set of user-provided source files. Ships an
   `amazon-doc-writer` agent plus per-doc-type skills and a shared
   `amazon-writing-style` skill.
+- **`plugins/autonomous-builder`** — autonomously plans, implements, and
+  reviews multi-step work in a codebase. Ships an `autonomous-builder`
+  orchestrator agent plus `planner`, `implementer`, `reviewer`, and
+  `researcher` subagents and the `/autonomous-build <goal>` slash
+  command. Hardened for large or legacy codebases via a shared
+  `## Discoveries` log, tiered (cheap/gate) acceptance criteria,
+  adaptive retry, and first-class plan revision.
 
 ## Install
 
@@ -43,20 +50,39 @@ and its own agents, skills, hooks, and commands.
     │       ├── writing-hooks/SKILL.md
     │       ├── writing-skills/SKILL.md
     │       └── writing-commands/SKILL.md
-    └── amazon-doc-writer/
+    ├── amazon-doc-writer/
+    │   ├── .claude-plugin/plugin.json
+    │   ├── agents/
+    │   │   └── amazon-doc-writer.md
+    │   └── skills/
+    │       ├── amazon-doc-writer/SKILL.md
+    │       ├── amazon-writing-style/SKILL.md
+    │       ├── writing-prfaq/SKILL.md
+    │       ├── writing-technical-design/SKILL.md
+    │       ├── writing-mini-technical-design/SKILL.md
+    │       ├── writing-analysis-report/SKILL.md
+    │       ├── writing-coe/SKILL.md
+    │       ├── writing-op1-narrative/SKILL.md
+    │       └── writing-wbr-narrative/SKILL.md
+    └── autonomous-builder/
         ├── .claude-plugin/plugin.json
         ├── agents/
-        │   └── amazon-doc-writer.md
+        │   ├── autonomous-builder.md
+        │   ├── planner.md
+        │   ├── implementer.md
+        │   ├── reviewer.md
+        │   └── researcher.md
+        ├── commands/
+        │   └── autonomous-build.md
         └── skills/
-            ├── amazon-doc-writer/SKILL.md
-            ├── amazon-writing-style/SKILL.md
-            ├── writing-prfaq/SKILL.md
-            ├── writing-technical-design/SKILL.md
-            ├── writing-mini-technical-design/SKILL.md
-            ├── writing-analysis-report/SKILL.md
-            ├── writing-coe/SKILL.md
-            ├── writing-op1-narrative/SKILL.md
-            └── writing-wbr-narrative/SKILL.md
+            ├── autonomous-builder/SKILL.md
+            ├── plan-file-format/SKILL.md
+            ├── planning-tasks/SKILL.md
+            ├── amending-plans/SKILL.md
+            ├── orchestration-loop/SKILL.md
+            ├── implementing-tasks/SKILL.md
+            ├── reviewing-acceptance-criteria/SKILL.md
+            └── researching/SKILL.md
 ```
 
 ## Adding new plugins

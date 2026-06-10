@@ -69,3 +69,17 @@ into the manifest via `"hooks": "./hooks/hooks.json"`.
       `PostToolUse`).
 - [ ] Plugin-relative scripts use `${CLAUDE_PLUGIN_ROOT}` and are executable.
 - [ ] The file is referenced from `plugin.json` `hooks`.
+
+## Official docs (source of truth)
+
+If this skill conflicts with the official docs (event names, matcher rules,
+exit-code semantics, env vars), the docs win — fetch them and flag this
+skill for an update.
+
+- Hooks reference (full event list, JSON input/output schema, exit codes):
+  https://code.claude.com/docs/en/hooks
+- Hooks guide (recipes: notifications, formatters, blockers, audits):
+  https://code.claude.com/docs/en/hooks-guide
+- Plugins reference — Hooks section (how `hooks` is wired into
+  `plugin.json` and which events plugins support):
+  https://code.claude.com/docs/en/plugins-reference

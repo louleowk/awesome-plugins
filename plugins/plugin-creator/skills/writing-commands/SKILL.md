@@ -58,3 +58,18 @@ file names.
 - [ ] `allowed-tools` is set when the command should be sandboxed.
 - [ ] Body addresses Claude and uses `$ARGUMENTS` if applicable.
 - [ ] File is listed in `plugin.json` `commands`.
+
+## Official docs (source of truth)
+
+Note: Claude Code merged custom commands into skills. A file at
+`.claude/commands/foo.md` and a skill at `.claude/skills/foo/SKILL.md` both
+create `/foo` and work the same way. For new plugins prefer `skills/`; the
+`commands/` layout still works and is documented in the skills page.
+
+If this skill conflicts with the official docs (frontmatter fields,
+`$ARGUMENTS` semantics, allowed-tools syntax), the docs win — fetch them
+and flag this skill for an update.
+
+- Skills (covers custom commands): https://code.claude.com/docs/en/skills
+- Plugins reference — Commands section (how `commands` paths are wired
+  into `plugin.json`): https://code.claude.com/docs/en/plugins-reference
