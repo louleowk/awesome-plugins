@@ -62,7 +62,10 @@ orchestrator interprets and routes.
      │
      ▼
 ┌──────────┐
-│ wrap-up  │  overall Status: Done. Summary of artefacts.
+│ wrap-up  │  overall Status: Done.
+│          │  Dispatch reflector(plan_path, slug, "Done").
+│          │  Summary of artefacts to user, including pointer to
+│          │  `.plans/<slug>-reflection.md`.
 └──────────┘
 
 REVISE_PLAN:
@@ -82,12 +85,14 @@ ADAPTIVE_ESCALATE:
     task Status: Blocked
     overall Status: Blocked
     escalate to user (see template below)
+    dispatch reflector(plan_path, slug, "Blocked") so the failure
+      produces durable advice in `.plans/<slug>-reflection.md`
 ```
 
 ## Dispatch wiring
 
 The orchestrator is the only agent allowed to dispatch the planner,
-implementer, or reviewer. Workers do not dispatch each other.
+implementer, reviewer, or reflector. Workers do not dispatch each other.
 
 | Subagent       | Dispatched with                                                                                         |
 | -------------- | ------------------------------------------------------------------------------------------------------- |
@@ -95,6 +100,7 @@ implementer, or reviewer. Workers do not dispatch each other.
 | `implementer`  | Plan-file path, task ID, attempt number (1–3), and (for retries) the previous attempt's FAIL feedback.  |
 | `reviewer`     | Plan-file path, task ID, and AC mode (`cheap-only` if attempt < 3 and no `[gate]` AC need running yet, or `cheap+gate` when about to mark Done). |
 | `researcher`   | Question, thoroughness, expected return shape (see `../researching/SKILL.md`).                          |
+| `reflector`    | Plan-file path, slug, terminal Status (`Done` or `Blocked`), optional one-line note. See `../reflecting-on-sessions/SKILL.md`. |
 
 The orchestrator may also dispatch the researcher itself — typically when
 investigating a repeated `failure_mode` before deciding `PLAN_WRONG` vs
@@ -216,11 +222,64 @@ isn't a `PLAN_WRONG`, or rejected revision):
 Plan file: `.plans/<slug>.md`. How do you want to proceed?
 ```
 
+After the user acknowledges the escalation (and regardless of which option
+they pick), dispatch the reflector once with `terminal_status="Blocked"`
+so the failure produces durable advice in `.plans/<slug>-reflection.md`.
+
+## Wrap-up message template
+
+When all phases reach `Done` and the overall plan Status is set to `Done`,
+dispatch the reflector once and then post:
+
+```markdown
+**✅ Plan complete: <title>**
+
+- Phases done: <P>
+- Tasks done: <T>
+- Files touched (deduplicated): <list>
+- Discoveries logged: <count>
+
+**Retrospective:** `.plans/<slug>-reflection.md`
+> <one-line headline from the reflection file's "What didn't" or
+>  "Suggested follow-up" section, if any; otherwise: "Session ran
+>  cleanly — no follow-up suggested.">
+
+Plan file: `.plans/<slug>.md`.
+```
+
+The reflector dispatch must happen **before** this message — the message
+links into the reflection file, so the file has to exist.
+
+## Reflector dispatch (terminal states)
+
+Dispatch the reflector **exactly once** per session, at the moment overall
+Status becomes terminal:
+
+- On `Done`: after setting overall Status, before the wrap-up message.
+- On `Blocked`: after escalating to the user (so the escalation message
+  isn't delayed by the reflection write).
+
+Brief shape (see `../reflecting-on-sessions/SKILL.md` for the full
+contract):
+
+```
+plan_path: .plans/<slug>.md
+slug: <kebab-case>
+terminal_status: Done | Blocked
+note (optional): <one-liner — e.g. "two PLAN_WRONGs in Phase 2; please dig">
+```
+
+The reflector returns an artefact summary (path written + headline
+counts). Surface only the path in your user-facing message; the user
+opens the file for the rest.
+
 ## Hard rules
 
 - Never skip review. Every implementer dispatch is followed by a reviewer
   dispatch — no exceptions, no "this one's obviously fine".
 - Never skip a phase checkpoint.
+- Never skip reflection at terminal states. When overall Status reaches
+  `Done` or `Blocked`, dispatch the reflector exactly once.
 - Never silently mutate the plan. All amendments go through
   `../amending-plans/SKILL.md` and require user re-approval.
 - Never edit product code. The orchestrator only reads/writes the plan file
@@ -264,6 +323,8 @@ Before dispatching the reviewer:
 - `../amending-plans/SKILL.md` — PLAN_WRONG flow and revision-mode dispatch.
 - `../researching/SKILL.md` — dispatching the researcher during
   ADAPTIVE_ESCALATE.
+- `../reflecting-on-sessions/SKILL.md` — dispatching the reflector at
+  wrap-up and Blocked.
 - `../implementing-tasks/SKILL.md` — what the implementer expects in its
   dispatch brief.
 - `../reviewing-acceptance-criteria/SKILL.md` — what the reviewer expects.

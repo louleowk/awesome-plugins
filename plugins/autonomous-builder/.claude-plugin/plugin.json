@@ -12,7 +12,8 @@
     "./agents/planner.md",
     "./agents/implementer.md",
     "./agents/reviewer.md",
-    "./agents/researcher.md"
+    "./agents/researcher.md",
+    "./agents/reflector.md"
   ],
   "skills": [
     "./skills/autonomous-builder",
@@ -22,7 +23,8 @@
     "./skills/orchestration-loop",
     "./skills/implementing-tasks",
     "./skills/reviewing-acceptance-criteria",
-    "./skills/researching"
+    "./skills/researching",
+    "./skills/reflecting-on-sessions"
   ],
   "commands": [
     "./commands/autonomous-build.md"

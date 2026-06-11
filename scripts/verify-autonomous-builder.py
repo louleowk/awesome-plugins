@@ -26,10 +26,10 @@ print(
     "1b. Counts: agents=%d, skills=%d, commands=%d"
     % (len(m["agents"]), len(m["skills"]), len(m["commands"]))
 )
-if len(m["agents"]) != 5:
-    fail("agents count %d != 5" % len(m["agents"]))
-if len(m["skills"]) != 8:
-    fail("skills count %d != 8" % len(m["skills"]))
+if len(m["agents"]) != 6:
+    fail("agents count %d != 6" % len(m["agents"]))
+if len(m["skills"]) != 9:
+    fail("skills count %d != 9" % len(m["skills"]))
 if len(m["commands"]) != 1:
     fail("commands count %d != 1" % len(m["commands"]))
 
@@ -136,7 +136,8 @@ for cp in m["commands"]:
         fail("command not kebab-case: %s" % n)
 print("5. Kebab-case naming: %s" % ("OK" if not errors else "FAIL"))
 
-# ---- 6. Researcher is read-only; workers inherit all tools ----
+# ---- 6. Researcher is read-only; reflector is read-only + Write;
+#         workers inherit all tools ----
 rfm = parse_fm(os.path.join(BASE, "agents", "researcher.md"))
 if rfm is None or "tools" not in rfm:
     fail("researcher.md missing tools field (must be read-only)")
@@ -148,6 +149,22 @@ else:
         fail("researcher has forbidden tools: %s" % bad)
     print("6a. Researcher tools: %s" % tools)
 
+# Reflector: read-only tools + Write only (no Edit, Bash, Task,
+# NotebookEdit). Write is required so it can produce
+# .plans/<slug>-reflection.md.
+xfm = parse_fm(os.path.join(BASE, "agents", "reflector.md"))
+if xfm is None or "tools" not in xfm:
+    fail("reflector.md missing tools field (must be read-only + Write)")
+else:
+    tools = [t.strip() for t in xfm["tools"].split(",")]
+    forbidden = {"Edit", "Bash", "NotebookEdit", "Task"}
+    bad = [t for t in tools if t in forbidden]
+    if bad:
+        fail("reflector has forbidden tools: %s" % bad)
+    if "Write" not in tools:
+        fail("reflector must have Write tool to emit reflection file")
+    print("6b. Reflector tools: %s" % tools)
+
 for worker in ["autonomous-builder", "planner", "implementer", "reviewer"]:
     wfm = parse_fm(os.path.join(BASE, "agents", worker + ".md"))
     if wfm and "tools" in wfm:
@@ -155,7 +172,7 @@ for worker in ["autonomous-builder", "planner", "implementer", "reviewer"]:
             "worker %s has tools restriction (%s); should inherit all"
             % (worker, wfm["tools"])
         )
-print("6b. Workers inherit all tools: %s" % ("OK" if not errors else "FAIL"))
+print("6c. Workers inherit all tools: %s" % ("OK" if not errors else "FAIL"))
 
 # ---- 7. Marketplace registration ----
 with open(".claude-plugin/marketplace.json", encoding="utf-8") as f:

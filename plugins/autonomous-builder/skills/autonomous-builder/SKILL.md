@@ -6,7 +6,7 @@ description: Overview skill for the autonomous-builder plugin. Use this when the
 # Autonomous Builder
 
 This plugin plans, implements, and reviews a multi-step change autonomously.
-A single **orchestrator** agent drives the workflow; four other agents do
+A single **orchestrator** agent drives the workflow; five other agents do
 the actual work as subagents.
 
 ## When to use
@@ -39,22 +39,25 @@ the actual work as subagents.
 | `implementer`          | Executes one task per call. Edits product code.       | Orchestrator only.                                       |
 | `reviewer`             | Verifies a task against its acceptance criteria.      | Orchestrator only.                                       |
 | `researcher`           | Read-only exploration / multi-file search.            | Any of the four above (incl. orchestrator). Cannot dispatch anything. |
+| `reflector`            | End-of-session retrospective. Writes improvement advice to `.plans/<slug>-reflection.md`. | Orchestrator only, at terminal Status (`Done` or `Blocked`). |
 
 The four workers inherit all tools. The researcher is restricted to read-only
-tools (Read, Grep, Glob, WebFetch) — that's its whole purpose.
+tools (Read, Grep, Glob, WebFetch). The reflector is restricted to read-only
+tools plus a single `Write` for its reflection file (Read, Grep, Glob, Write).
 
 ## Skills and where they're loaded
 
 | Skill                              | Loaded by                                                                            |
 | ---------------------------------- | ------------------------------------------------------------------------------------ |
 | `autonomous-builder` (this)        | Orchestrator (overview / dispatch graph).                                            |
-| `plan-file-format`                 | All five agents (shared contract).                                                   |
+| `plan-file-format`                 | All six agents (shared contract).                                                    |
 | `planning-tasks`                   | Planner.                                                                             |
 | `amending-plans`                   | Planner, reviewer, orchestrator.                                                     |
 | `orchestration-loop`               | Orchestrator.                                                                        |
 | `implementing-tasks`               | Implementer.                                                                         |
 | `reviewing-acceptance-criteria`    | Reviewer.                                                                            |
-| `researching`                      | All five agents (caller contract + researcher's own rules).                          |
+| `researching`                      | All five non-reflector agents (caller contract + researcher's own rules).            |
+| `reflecting-on-sessions`           | Reflector; consulted by orchestrator when crafting the reflector dispatch brief.     |
 
 ## Workflow at a glance
 
@@ -71,7 +74,12 @@ tools (Read, Grep, Glob, WebFetch) — that's its whole purpose.
 5. After the last task in a phase: reviewer verifies the phase's regression
    AC; orchestrator posts a one-line phase summary and waits briefly for
    user objection before starting the next phase.
-6. `wrap-up` — overall Status=Done; summary of artefacts.
+6. `wrap-up` — overall Status=Done; dispatch the reflector to write
+   `.plans/<slug>-reflection.md` with improvement advice for the user
+   prompt, agent prompts, and plan/process; then post the artefact summary
+   to the user with a pointer to the reflection file.
+7. On `Blocked` (escalation): same reflector dispatch happens after the
+   user is notified, so failures also produce durable advice.
 
 ## Plan file location
 
@@ -89,3 +97,4 @@ table.
 - `../implementing-tasks/SKILL.md` — implementer per-attempt protocol.
 - `../reviewing-acceptance-criteria/SKILL.md` — reviewer protocol.
 - `../researching/SKILL.md` — when and how to dispatch the researcher.
+- `../reflecting-on-sessions/SKILL.md` — end-of-session retrospective protocol.

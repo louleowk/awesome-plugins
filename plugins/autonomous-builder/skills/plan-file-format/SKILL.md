@@ -22,6 +22,11 @@ Every agent reads and writes it; the structure below is non-negotiable.
 - Slug: kebab-case, derived from the goal (e.g. `add-hello-command`,
   `rename-foobar-to-foo-bar`). Planner picks it; orchestrator uses it for
   dispatch.
+- Companion file: `.plans/<slug>-reflection.md` is written by the
+  `reflector` agent at the end of the session (terminal Status `Done` or
+  `Blocked`). The reflection file is **not** part of the plan-file
+  contract below — it has its own format owned by
+  `../reflecting-on-sessions/SKILL.md`. No other agent reads or writes it.
 
 ## File skeleton
 
