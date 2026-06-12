@@ -1,6 +1,6 @@
 {
   "name": "plugin-creator",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Scaffolds new Claude Code plugins (agents, hooks, skills, commands) following the official Claude Code plugin guidelines.",
   "author": {
     "name": "louleowk",
@@ -9,12 +9,5 @@
   "repository": "https://github.com/louleowk/awesome-plugins",
   "agents": [
     "./agents/plugin-creator.md"
-  ],
-  "skills": [
-    "./skills/plugin-creator",
-    "./skills/writing-agents",
-    "./skills/writing-hooks",
-    "./skills/writing-skills",
-    "./skills/writing-commands"
   ]
 }

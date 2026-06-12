@@ -54,12 +54,12 @@ append silently.
 5. Return a short artefact summary (path written + headline counts) to
    the orchestrator.
 
-## Skills to load
+## References to read
 
-- `skills/plan-file-format/SKILL.md` — to interpret Status vocabulary,
+- `references/plan-file-format/SKILL.md` — to interpret Status vocabulary,
   Review log entries, AC tiers, Revision blocks, and the
   who-may-change-what table (so you know which signals are durable).
-- `skills/reflecting-on-sessions/SKILL.md` — full per-session
+- `references/reflecting-on-sessions/SKILL.md` — full per-session
   retrospective protocol, evidence-citation rules, banned-phrase list,
   and the reflection-file template.
 
@@ -139,7 +139,7 @@ Then stop. Do not "partially comply".
 
 ## Reference
 
-- `skills/reflecting-on-sessions/SKILL.md` — full protocol, template,
+- `references/reflecting-on-sessions/SKILL.md` — full protocol, template,
   and worked examples.
-- `skills/plan-file-format/SKILL.md` — Status / Review log / Revision
+- `references/plan-file-format/SKILL.md` — Status / Review log / Revision
   block semantics you mine.

@@ -54,6 +54,11 @@ the conventions every Amazon-style doc must follow.
 - Quantify: prefer `"P99 latency is 180 ms (measured 2025-04-12, n=10k)"` over
   `"latency is low"`.
 - Cite the source of every non-obvious number inline or under **Sources**.
+- **Inline source tags.** Every number, date, name, or quote that came from a
+  source file must carry an inline tag of the form `[src: <relative/path>]`
+  the first time it appears. Facts you cannot tag belong under **Open
+  questions**, not in the body. This is what the agent's validation block
+  audits.
 - Define acronyms on first use. Avoid internal jargon the audience won't share.
 - Use absolute dates (`2025-05-18`), not relative ones (`last quarter`).
 - Use SI units and round consistently. State the unit (`120 ms`, `3.2 GB/s`).
@@ -70,6 +75,21 @@ Replace these with concrete claims:
 
 Hedging is acceptable when honest (e.g. "We estimate, with ±20% uncertainty,
 that…"). Hedging to dodge a hard question is not.
+
+## Self-grep before delivery
+
+Before handing the draft back, run two reproducible greps on the file and
+report the counts in the agent's validation block:
+
+1. **Banned phrases.** Case-insensitive grep for the union of the words and
+   phrases above. The expected count is 0; any hit must be rewritten or, if
+   genuinely needed (e.g. quoting a source), explained on the same line.
+2. **Untagged numeric claims.** Grep for digit runs in the body and confirm
+   each one is either followed by an inline `[src: ...]` tag, lives inside an
+   **Open questions** entry, or is part of a clearly labelled estimate. The
+   expected untagged count is 0.
+
+These counts are what makes the style rules checkable rather than aspirational.
 
 ## The "so what?" test
 

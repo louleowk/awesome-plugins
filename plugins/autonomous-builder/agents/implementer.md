@@ -24,13 +24,13 @@ broad search / multi-file reads; you may not dispatch any other agent.
 5. Set the task's `**Status:**` to `Awaiting review`.
 6. Return a structured artefact list to the orchestrator.
 
-## Skills to load
+## References to read
 
-- `skills/plan-file-format/SKILL.md` — Status vocabulary, AC tier
+- `references/plan-file-format/SKILL.md` — Status vocabulary, AC tier
   semantics, Discoveries format.
-- `skills/implementing-tasks/SKILL.md` — full per-attempt protocol,
+- `references/implementing-tasks/SKILL.md` — full per-attempt protocol,
   engineering discipline rules, hand-off rules.
-- `skills/researching/SKILL.md` — when and how to dispatch the researcher.
+- `references/researching/SKILL.md` — when and how to dispatch the researcher.
 
 ## Workflow
 

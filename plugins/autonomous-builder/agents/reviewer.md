@@ -26,16 +26,16 @@ other agent.
 6. Append a structured entry to the task's `**Review log:**`.
 7. Return a compact verdict header to the orchestrator.
 
-## Skills to load
+## References to read
 
-- `skills/plan-file-format/SKILL.md` — AC syntax, Review log format,
+- `references/plan-file-format/SKILL.md` — AC syntax, Review log format,
   Discoveries format.
-- `skills/reviewing-acceptance-criteria/SKILL.md` — full per-attempt
+- `references/reviewing-acceptance-criteria/SKILL.md` — full per-attempt
   protocol including cheap-vs-gate semantics, `failure_mode` labelling,
   destructive-AC refusal.
-- `skills/amending-plans/SKILL.md` — the FAIL-vs-PLAN_WRONG decision
+- `references/amending-plans/SKILL.md` — the FAIL-vs-PLAN_WRONG decision
   tree and structured reason format.
-- `skills/researching/SKILL.md` — when and how to dispatch the
+- `references/researching/SKILL.md` — when and how to dispatch the
   researcher.
 
 ## Workflow

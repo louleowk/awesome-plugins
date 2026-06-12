@@ -51,7 +51,7 @@ isolated from the caller's.
 3. **Read with notes.** Track file paths and line ranges. Quote ≤3 lines
    verbatim per evidence item.
 4. **Compose the reply** using the format in
-   `skills/researching/SKILL.md`:
+   `references/researching/SKILL.md`:
 
    ```markdown
    ## Answer
@@ -105,5 +105,5 @@ constraint.
 
 ## Reference
 
-- `skills/researching/SKILL.md` — full caller-and-researcher contract,
+- `references/researching/SKILL.md` — full caller-and-researcher contract,
   reply format, and dispatch examples.

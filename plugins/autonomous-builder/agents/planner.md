@@ -26,18 +26,18 @@ discovery; you may not dispatch any other agent.
 4. Return concise hand-off information to the orchestrator. Do **not**
    contact the user yourself — the orchestrator owns user interaction.
 
-## Skills to load
+## References to read
 
-- `skills/plan-file-format/SKILL.md` — the canonical plan-file spec, status
+- `references/plan-file-format/SKILL.md` — the canonical plan-file spec, status
   vocabulary, AC tier syntax, and who-may-change-what table. Read this
   every dispatch.
-- `skills/planning-tasks/SKILL.md` — the **initial mode** workflow
+- `references/planning-tasks/SKILL.md` — the **initial mode** workflow
   (discovery checklist, phase grouping, task decomposition, AC authoring
   bar).
-- `skills/amending-plans/SKILL.md` — the **revision mode** protocol
+- `references/amending-plans/SKILL.md` — the **revision mode** protocol
   (minimum-blast-radius amendment, diff block format, Review log
   preservation).
-- `skills/researching/SKILL.md` — caller-side rules for dispatching the
+- `references/researching/SKILL.md` — caller-side rules for dispatching the
   researcher and harvesting findings into `## Discoveries`.
 
 ## Workflow — initial mode

@@ -21,11 +21,14 @@ plugins that conform to Claude Code's official plugin format.
    - Otherwise create it at the repository root.
 3. Scaffold the canonical plugin layout (see below). Only create the
    subdirectories the plugin actually needs.
-4. Use the companion skills in this plugin to author each component:
-   - `writing-agents` — for files under `agents/`
-   - `writing-hooks`  — for `hooks/hooks.json`
-   - `writing-skills` — for files under `skills/<skill-name>/SKILL.md`
-   - `writing-commands` — for files under `commands/`
+4. Use the private reference docs in this plugin to author each component
+   (`Read` them under `${CLAUDE_PLUGIN_ROOT}/references/`):
+   - `references/writing-agents/SKILL.md` — for files under `agents/`
+   - `references/writing-hooks/SKILL.md`  — for `hooks/hooks.json`
+   - `references/writing-skills/SKILL.md` — for files under `skills/<skill-name>/SKILL.md`
+   - `references/writing-commands/SKILL.md` — for files under `commands/`
+   These are not exposed as Claude Code skills, so no other agent or user
+   invokes them.
 5. Validate everything you produced (JSON parses, frontmatter is well-formed,
    referenced files exist) and summarize what was created and how to install it.
 
@@ -82,21 +85,24 @@ Minimal example:
 3. **Write the manifest.** Generate `plugin.json` with `name`, `version`,
    `description`, `author`, `repository`, and the component arrays whose files
    you are about to create. Do not list a component you will not create.
-4. **Author components** by delegating to the matching skill:
-   - Agents → use the `writing-agents` skill. Each agent file has YAML
-     frontmatter (`name`, `description`, optional `tools`, optional `model`)
-     and a system-prompt body.
-   - Hooks → use the `writing-hooks` skill. Output a single `hooks/hooks.json`
-     mapping hook events (`PreToolUse`, `PostToolUse`, `UserPromptSubmit`,
-     `SessionStart`, `Stop`, `Notification`, etc.) to matcher/command entries.
-     Prefer `${CLAUDE_PLUGIN_ROOT}` for any plugin-relative script paths.
-   - Skills → use the `writing-skills` skill. Each skill is a directory
-     containing `SKILL.md` whose frontmatter has at minimum `name` and
-     `description`; the body explains *when* and *how* Claude should use it.
-   - Commands → use the `writing-commands` skill. Each command is a markdown
-     file under `commands/` with frontmatter (`description`, optional
-     `argument-hint`, optional `allowed-tools`) and a body describing what the
-     command should do. The file name (minus `.md`) becomes the slash command.
+4. **Author components** by following the matching reference doc:
+   - Agents → follow `references/writing-agents/SKILL.md`. Each agent file
+     has YAML frontmatter (`name`, `description`, optional `tools`, optional
+     `model`) and a system-prompt body.
+   - Hooks → follow `references/writing-hooks/SKILL.md`. Output a single
+     `hooks/hooks.json` mapping hook events (`PreToolUse`, `PostToolUse`,
+     `UserPromptSubmit`, `SessionStart`, `Stop`, `Notification`, etc.) to
+     matcher/command entries. Prefer `${CLAUDE_PLUGIN_ROOT}` for any
+     plugin-relative script paths.
+   - Skills → follow `references/writing-skills/SKILL.md`. Each skill is a
+     directory containing `SKILL.md` whose frontmatter has at minimum `name`
+     and `description`; the body explains *when* and *how* Claude should use
+     it.
+   - Commands → follow `references/writing-commands/SKILL.md`. Each command
+     is a markdown file under `commands/` with frontmatter (`description`,
+     optional `argument-hint`, optional `allowed-tools`) and a body
+     describing what the command should do. The file name (minus `.md`)
+     becomes the slash command.
 5. **Validate.** Parse `plugin.json`; verify every path listed in `agents`,
    `skills`, `commands`, and `hooks` exists; verify each component file has
    well-formed frontmatter.

@@ -1,6 +1,6 @@
 {
   "name": "autonomous-builder",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Autonomously plans, implements, and reviews multi-step work in a codebase. An orchestrator agent drafts a phased plan (with per-task acceptance criteria), gets the user's approval, then runs each task through an implementer and a reviewer with adaptive retry, plan-revision on PLAN_WRONG, and per-phase user checkpoints. Hardened for use in large or legacy codebases via a shared Discoveries log and tiered (cheap/gate) acceptance criteria.",
   "author": {
     "name": "louleowk",
@@ -14,17 +14,6 @@
     "./agents/reviewer.md",
     "./agents/researcher.md",
     "./agents/reflector.md"
-  ],
-  "skills": [
-    "./skills/autonomous-builder",
-    "./skills/plan-file-format",
-    "./skills/planning-tasks",
-    "./skills/amending-plans",
-    "./skills/orchestration-loop",
-    "./skills/implementing-tasks",
-    "./skills/reviewing-acceptance-criteria",
-    "./skills/researching",
-    "./skills/reflecting-on-sessions"
   ],
   "commands": [
     "./commands/autonomous-build.md"

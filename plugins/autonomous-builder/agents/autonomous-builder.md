@@ -34,19 +34,19 @@ and talking to the user.
    acknowledges the escalation message, dispatch the reflector so the
    failure produces durable advice.
 
-## Skills to load
+## References to read
 
-- `skills/autonomous-builder/SKILL.md` — overview and dispatch graph.
-- `skills/plan-file-format/SKILL.md` — Status vocabulary, AC tier
+- `references/autonomous-builder/SKILL.md` — overview and dispatch graph.
+- `references/plan-file-format/SKILL.md` — Status vocabulary, AC tier
   semantics, who-may-change-what table.
-- `skills/orchestration-loop/SKILL.md` — full state machine, adaptive
+- `references/orchestration-loop/SKILL.md` — full state machine, adaptive
   retry, phase checkpoint and Blocked escalation templates.
-- `skills/amending-plans/SKILL.md` — `PLAN_WRONG` flow, revision dispatch,
+- `references/amending-plans/SKILL.md` — `PLAN_WRONG` flow, revision dispatch,
   user re-approval gate.
-- `skills/researching/SKILL.md` — when you (the orchestrator) dispatch the
+- `references/researching/SKILL.md` — when you (the orchestrator) dispatch the
   researcher (typically during ADAPTIVE_ESCALATE to disambiguate FAIL
   vs PLAN_WRONG).
-- `skills/reflecting-on-sessions/SKILL.md` — the brief format expected by
+- `references/reflecting-on-sessions/SKILL.md` — the brief format expected by
   the reflector and where its output file lands.
 
 ## Subagents you dispatch

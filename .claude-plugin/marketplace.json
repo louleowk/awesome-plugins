@@ -7,19 +7,19 @@
   "plugins": [
     {
       "name": "plugin-creator",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "source": "./plugins/plugin-creator",
       "description": "Scaffolds new Claude Code plugins (agents, hooks, skills, commands) following the official Claude Code plugin guidelines."
     },
     {
       "name": "amazon-doc-writer",
-      "version": "0.1.0",
+      "version": "0.3.0",
       "source": "./plugins/amazon-doc-writer",
       "description": "Writes Amazon-style internal documents (PR/FAQ, technical design, mini design, analysis report, COE, OP1/OP2 narrative, WBR narrative) from a set of user-provided source files, following Amazon's narrative writing conventions."
     },
     {
       "name": "autonomous-builder",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "source": "./plugins/autonomous-builder",
       "description": "Autonomously plans, implements, and reviews multi-step work in a codebase. An orchestrator agent drafts a phased plan with per-task acceptance criteria, gets the user's approval, then runs each task through an implementer and a reviewer with adaptive retry, plan revision, and per-phase user checkpoints. Hardened for large or legacy codebases via a shared Discoveries log and tiered (cheap/gate) acceptance criteria."
     }
