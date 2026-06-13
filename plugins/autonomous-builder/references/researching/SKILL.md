@@ -38,12 +38,37 @@ Do **NOT** dispatch the researcher for:
    - **Expected return shape:** what the caller will do with the answer
      (e.g. "list of file paths I need to read", "one fact + citation",
      "comparison table of approaches").
-3. **Harvest findings into `## Discoveries`** as soon as the researcher
-   returns. Tag each line `[<your role> · YYYY-MM-DD]` with a file:line
-   citation. Future agents must not need to re-dispatch for the same fact.
-4. **Don't re-dispatch the same question.** If a previous Discovery answers
-   it, reuse. If the previous answer was wrong or incomplete, append a new
-   Discovery line correcting it — don't quietly re-ask.
+3. **Harvest findings into `## Discoveries` — mandatory.** Within the
+   same dispatch (before returning to the orchestrator, or before the
+   next file edit), append at least one Discovery line for every
+   distinct fact in the researcher's `## Answer` and `## Evidence`
+   sections. Tag each line `[<your role> · YYYY-MM-DD]` with the
+   researcher's file:line citation. Future agents must not need to
+   re-dispatch for the same fact.
+
+   **A researcher dispatch with no resulting Discovery line is a
+   caller bug.** The reviewer audits this on every task review (see
+   below) and emits `PLAN_WRONG` with trigger `unharvested-research`
+   if the Review log shows a researcher dispatch in this attempt with
+   no matching Discovery append. Cost-of-violation: the next agent
+   re-dispatches for the same question, wasting tokens and
+   compounding context drift.
+
+   Minimum harvest: one Discovery line per fact in `## Answer`. If
+   the answer is "the auth middleware lives at `src/auth.ts:42`",
+   that's one Discovery. If it's a comparison table with three
+   approaches, that's three Discoveries (or one summary line +
+   citations to all three). Do not paste the entire researcher reply
+   verbatim — distil to facts.
+
+4. **Don't re-dispatch the same question.** Before dispatching, grep
+   `## Discoveries` for keywords from your question. If a Discovery
+   from this session (or a prior `[planner|researcher · …]` line
+   seeded into Context) answers it, reuse. If the previous answer
+   was wrong or stale (the cited file:line no longer exists / has
+   changed materially), append a new Discovery line correcting it
+   with `[<your role> · YYYY-MM-DD] supersedes <prior date>: <new
+   fact>` — don't quietly re-ask.
 
 ### Example caller dispatch
 
@@ -98,6 +123,30 @@ When invoked:
    changes, don't critique the design, don't propose tasks. If the caller
    needs an opinion, they'll ask.
 
+## Reviewer-side audit
+
+The reviewer audits researcher harvests as part of the standard
+task review. On every attempt:
+
+1. Read the implementer's artefact list for any line that says
+   "Dispatched researcher" / "researcher dispatched" / similar.
+2. For each dispatch reported, grep `## Discoveries` for at least
+   one new line tagged `[<implementer-role> · <today>]` that cites
+   a file or URL the researcher's reply would have produced.
+3. If a dispatch was reported but no matching Discovery exists →
+   emit `PLAN_WRONG` with trigger `unharvested-research`,
+   `Affected AC: n/a (caller-discipline)`, and a Suggested fix:
+   "Implementer must append the researcher's findings to
+   `## Discoveries` before handing off. Re-attempt the task with
+   the harvest performed."
+4. The orchestrator routes this back to the implementer as a
+   normal retry with that feedback.
+
+The planner is held to the same rule in initial mode — if the
+plan was created with researcher dispatches but Discoveries is
+empty, the reviewer rejects the first task review with
+`PLAN_WRONG (unharvested-research)` even before running AC.
+
 ## Refusal rule (researcher only)
 
 The researcher's `tools:` frontmatter is restricted to `Read, Grep, Glob,
@@ -116,10 +165,12 @@ second researcher itself.
 
 - Pick `quick` by default. Escalate thoroughness only when `quick` came back
   with "Caveats: incomplete".
-- A researcher reply that produces no entry in `## Discoveries` is usually a
-  wasted dispatch — either the question was too specific (you should have
-  used `Read` directly) or the answer was ephemeral (next agent will
-  re-dispatch for the same thing).
+- A researcher reply that produces no entry in `## Discoveries` is a
+  caller bug, not just a smell. The reviewer's audit emits
+  `PLAN_WRONG` (trigger: `unharvested-research`). Either the question
+  was too specific (you should have used `Read` directly) or the answer
+  was ephemeral (next agent will re-dispatch for the same thing) —
+  fix by either not dispatching or by harvesting properly.
 - One researcher dispatch per concern. Don't chain three "follow-up"
   researchers when one `thorough` would have answered everything.
 
@@ -130,6 +181,18 @@ second researcher itself.
 - [ ] Thoroughness chosen explicitly (`quick` / `medium` / `thorough`).
 - [ ] Expected return shape stated.
 - [ ] Will harvest findings into `## Discoveries` on return.
+
+## Checklist (after returning, caller side)
+
+- [ ] At least one new `[<your role> · <today>]` Discovery line
+      appended per fact in the researcher's `## Answer`.
+- [ ] Each Discovery line has a file:line citation (or `WebFetch`
+      URL) drawn from the researcher's `## Evidence` section.
+- [ ] No verbatim paste of the entire researcher reply — distilled
+      to facts.
+- [ ] If the researcher's reply contradicted a prior Discovery,
+      appended a `supersedes <prior date>` line rather than
+      editing the prior line.
 
 ## Checklist (researcher's reply)
 

@@ -42,7 +42,7 @@ orchestrator interprets and routes.
 │   for each TASK in phase (honour Depends on):                    │
 │     repeat (attempt = 1..3):                                     │
 │       dispatch implementer(task_id, attempt, last_fail_feedback) │
-│       dispatch reviewer(task_id, mode = cheap-only OR cheap+gate)│
+│       dispatch reviewer(task_id, mode = fast-only OR fast+full) │
 │       parse reviewer verdict:                                    │
 │         PASS                       → task Status: Done; break    │
 │         PLAN_WRONG                 → goto REVISE_PLAN            │
@@ -52,9 +52,11 @@ orchestrator interprets and routes.
 │         FAIL && (attempt=3 OR                                    │
 │                  failure_mode == prev) → ADAPTIVE_ESCALATE        │
 │                                                                  │
-│   phase-regression: dispatch reviewer to verify Phase regression │
-│       AC. On FAIL: re-open last task as Awaiting review with     │
-│       regression feedback; loop back to its retry block.         │
+│   phase Definition of Done: dispatch reviewer in `dod` mode to    │
+│       verify the phase's `**Definition of Done:**` block. The     │
+│       reviewer dispatches `tester` for any `[Journey]`    │
+│       AC. On FAIL: re-open last task as Awaiting review with the  │
+│       DoD feedback; loop back to its retry block.                 │
 │                                                                  │
 │   phase Status: Done                                             │
 │   PHASE_CHECKPOINT to user (see template below).                 │
@@ -92,73 +94,103 @@ ADAPTIVE_ESCALATE:
 ## Dispatch wiring
 
 The orchestrator is the only agent allowed to dispatch the planner,
-implementer, reviewer, or reflector. Workers do not dispatch each other.
+implementer, reviewer, or reflector. Workers do not dispatch each other,
+with one exception: the **reviewer** may dispatch the `tester`
+subagent (and the `researcher`).
 
 | Subagent       | Dispatched with                                                                                         |
 | -------------- | ------------------------------------------------------------------------------------------------------- |
 | `planner`      | Mode (`initial` or `revision`), plan-file path, and (for revision) the triggering Review log entry.     |
 | `implementer`  | Plan-file path, task ID, attempt number (1–3), and (for retries) the previous attempt's FAIL feedback.  |
-| `reviewer`     | Plan-file path, task ID, and AC mode (`cheap-only` if attempt < 3 and no `[gate]` AC need running yet, or `cheap+gate` when about to mark Done). |
-| `researcher`   | Question, thoroughness, expected return shape (see `../researching/SKILL.md`).                          |
+| `reviewer`     | Plan-file path, task ID (or phase ID for DoD), and AC mode (`fast-only` if attempt < 3 and no `[Full]` AC need running yet; `fast+full` when about to mark Done; `dod` for phase Definition of Done verification). |
+| `researcher`   | Question, thoroughness, expected return shape (see `../researching/SKILL.md`). May be dispatched by orchestrator OR any worker. |
+| `tester` | Plan-file path, phase ID, verbatim `[Journey]` AC text, surface (`cli`/`api`/`web`), target entry point (binary path or base URL), persona-journey description, attempt number. **Dispatched by the reviewer only**, during `dod` mode. See `../exercising-journeys/SKILL.md`. |
 | `reflector`    | Plan-file path, slug, terminal Status (`Done` or `Blocked`), optional one-line note. See `../reflecting-on-sessions/SKILL.md`. |
 
 The orchestrator may also dispatch the researcher itself — typically when
 investigating a repeated `failure_mode` before deciding `PLAN_WRONG` vs
-escalate.
+escalate. The orchestrator does **not** dispatch the tester
+directly; it only triggers the `dod` review mode and the reviewer
+handles tester dispatch per `[Journey]` AC.
 
 ## Adaptive retry rule (in detail)
 
 Fixed N=3 retries is wrong. Replace with:
 
-1. **Attempt 1.** Implementer + reviewer (cheap-only). On FAIL, record the
+1. **Attempt 1.** Implementer + reviewer (`fast-only`). On FAIL, record the
    reviewer's `failure_mode:` label.
-2. **Attempt 2.** Implementer + reviewer (cheap-only). On FAIL:
+2. **Attempt 2.** Implementer + reviewer (`fast-only`). On FAIL:
    - If `failure_mode` matches attempt 1 → **escalate immediately** (no
      attempt 3). Don't burn another attempt on the same wall.
    - Otherwise → continue.
-3. **Attempt 3.** Implementer + reviewer (`cheap+gate` — this is the
+3. **Attempt 3.** Implementer + reviewer (`fast+full` — this is the
    about-to-Done attempt). On FAIL → escalate.
 
 Repeated `failure_mode` is the strongest signal that the *plan*, not the
 *implementation*, is the problem. Treat it as a soft `PLAN_WRONG` per
 `../amending-plans/SKILL.md`.
 
-## Reviewer AC mode (cheap vs gate)
+Note: only `Must`-priority `[Fast]` / `[Full]` failures produce a
+`failure_mode:` label and feed adaptive retry. `Should` (WARN) and
+`Could` (INFO) AC failures are recorded in the Review log but do not
+cause FAIL or trigger retry.
+
+## Reviewer AC mode (`fast-only` / `fast+full` / `dod`)
 
 The orchestrator tells the reviewer which AC subset to run, based on
 attempt context:
 
-- **`cheap-only`** — attempts where we're not yet trying to finalise. Cuts
-  review cost dramatically: a `[gate]` integration suite that takes 5 min
-  doesn't run on every iteration.
-- **`cheap+gate`** — the attempt that intends to mark the task `Done`.
-  Reviewer runs everything. Usually attempt N when the implementer signals
-  "I think this is done"; conservatively, always attempt 3.
+- **`fast-only`** — attempts where we're not yet trying to finalise. Cuts
+  review cost dramatically: a `[Full]` integration suite that takes 5 min
+  doesn't run on every iteration. Runs all `[Fast]` AC across every
+  priority (`Must` / `Should` / `Could`).
+- **`fast+full`** — the attempt that intends to mark the task `Done`.
+  Reviewer runs `[Fast]` first; if any `Must` `[Fast]` fails, skips
+  `[Full]`. Otherwise runs all `[Full]` AC. Usually attempt N when the
+  implementer signals "I think this is done"; conservatively, always
+  attempt 3.
+- **`dod`** — phase Definition of Done verification, run once after the
+  last task in a phase passes. Reviewer runs every AC under the phase's
+  `**Definition of Done:**` block. For each `[Journey]` AC, the
+  reviewer dispatches the `tester` subagent (the orchestrator
+  does NOT dispatch it directly). Same fast-then-full ordering applies.
 
-If `[cheap]` AC fail on a `cheap+gate` attempt, the verdict is FAIL — the
-reviewer doesn't need to bother running `[gate]` AC for that attempt.
+If any `Must` `[Fast]` AC fail on a `fast+full` or `dod` attempt, the
+verdict is FAIL — the reviewer doesn't need to bother running `[Full]`
+or `[Journey]` AC for that attempt.
 
 ## Phase checkpoint
 
-After a phase completes (all tasks Done **and** phase regression AC passed),
+After a phase completes (all tasks Done **and** phase Definition of Done passed),
 the orchestrator posts a structured one-message checkpoint to the user:
 
 ```markdown
 **Phase <N> done: <phase name>** ✓
 
 - Tasks completed: <id1>, <id2>, …
-- Phase regression AC: PASS
+- Definition of Done: PASS
 - Files touched this phase: <list, deduplicated>
 - New Discoveries added: <count>
+
+**Warnings (Should AC failed but not blocking):**
+- Task <id> AC #<n>: "<verbatim AC text>" — <one-line reason>
+- Phase DoD AC #<n>: "<verbatim AC text>" — <one-line reason>
+
+(or `Warnings: none` if no `Should` AC failed in this phase.)
 
 **Up next — Phase <N+1>: <name>**
 - <Task id>: <name>
 - <Task id>: <name>
-- Phase regression AC: <one-line summary>
+- Definition of Done: <one-line summary>
 
 Continue, or any concerns? (Reply 'continue' or describe a change. Silence
 for one turn = continue.)
 ```
+
+The **Warnings** block lists every AC across this phase that was tagged
+`[Should] [...]` and emitted WARN in its Review log. `Could` AC (INFO)
+are not surfaced — too noisy. Always include the Warnings line, even
+when empty (`Warnings: none`), so the user knows it was checked.
 
 Interpreting the user's reply:
 
@@ -304,7 +336,7 @@ Before dispatching the implementer for attempt N:
 Before dispatching the reviewer:
 
 - [ ] Implementer set task Status to `Awaiting review`.
-- [ ] Chose `cheap-only` or `cheap+gate` per the rule above.
+- [ ] Chose `fast-only` / `fast+full` / `dod` per the rule above.
 - [ ] Plan file is on-disk (no in-memory drift).
 
 ## Checklist (orchestrator, every cycle)

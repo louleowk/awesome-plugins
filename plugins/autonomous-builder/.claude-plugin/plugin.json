@@ -1,7 +1,7 @@
 {
   "name": "autonomous-builder",
-  "version": "0.2.0",
-  "description": "Autonomously plans, implements, and reviews multi-step work in a codebase. An orchestrator agent drafts a phased plan (with per-task acceptance criteria), gets the user's approval, then runs each task through an implementer and a reviewer with adaptive retry, plan-revision on PLAN_WRONG, and per-phase user checkpoints. Hardened for use in large or legacy codebases via a shared Discoveries log and tiered (cheap/gate) acceptance criteria.",
+  "version": "0.4.0",
+  "description": "Autonomously plans, implements, and reviews multi-step work in a codebase. An orchestrator agent drafts a phased plan with MoSCoW-prioritised acceptance criteria, gets the user's approval, then runs each task through an implementer and a reviewer with adaptive retry, plan-revision on PLAN_WRONG, and per-phase user checkpoints. Phase Definition of Done supports `[Journey]` AC exercised against the running system by a `tester` subagent on three surfaces (CLI / HTTP API / web). Per-session reflector promotes durable codebase facts to `/memories/repo/autonomous-builder.md` so the planner reads them on the next session (compounding context across plans). Cross-session reflector mode (`/autonomous-reflect`) mines recurring patterns across multiple sessions. Hardened for use in large or legacy codebases via a shared Discoveries log.",
   "author": {
     "name": "louleowk",
     "url": "https://github.com/louleowk"
@@ -13,9 +13,12 @@
     "./agents/implementer.md",
     "./agents/reviewer.md",
     "./agents/researcher.md",
-    "./agents/reflector.md"
+    "./agents/reflector.md",
+    "./agents/tester.md"
   ],
   "commands": [
-    "./commands/autonomous-build.md"
+    "./commands/autonomous-build.md",
+    "./commands/autonomous-reflect.md",
+    "./commands/autonomous-status.md"
   ]
 }

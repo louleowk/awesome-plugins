@@ -39,32 +39,40 @@ the actual work as subagents.
 | `implementer`          | Executes one task per call. Edits product code.       | Orchestrator only.                                       |
 | `reviewer`             | Verifies a task against its acceptance criteria.      | Orchestrator only.                                       |
 | `researcher`           | Read-only exploration / multi-file search.            | Any of the four above (incl. orchestrator). Cannot dispatch anything. |
+| `tester`       | Exercises the running system like a real user to verify a `[Journey]` Definition-of-Done AC on one of three surfaces (CLI / HTTP API / web). Returns a structured journey log. | **Reviewer only**, during `dod` mode. Cannot dispatch anything. |
 | `reflector`            | End-of-session retrospective. Writes improvement advice to `.plans/<slug>-reflection.md`. | Orchestrator only, at terminal Status (`Done` or `Blocked`). |
 
 The four workers inherit all tools. The researcher is restricted to read-only
-tools (Read, Grep, Glob, WebFetch). The reflector is restricted to read-only
-tools plus a single `Write` for its reflection file (Read, Grep, Glob, Write).
+tools (Read, Grep, Glob, WebFetch). The tester is restricted to
+read-only tools plus Bash (Read, Grep, Glob, Bash, WebFetch) so it can
+drive shell binaries, `curl`, or `npx playwright` for the three
+supported surfaces; it cannot Write or Edit. The reflector is
+restricted to read-only tools plus a single `Write` for its reflection
+file (Read, Grep, Glob, Write).
 
 ## Skills and where they're loaded
 
 | Skill                              | Loaded by                                                                            |
 | ---------------------------------- | ------------------------------------------------------------------------------------ |
 | `autonomous-builder` (this)        | Orchestrator (overview / dispatch graph).                                            |
-| `plan-file-format`                 | All six agents (shared contract).                                                    |
+| `plan-file-format`                 | All seven agents (shared contract).                                                  |
 | `planning-tasks`                   | Planner.                                                                             |
 | `amending-plans`                   | Planner, reviewer, orchestrator.                                                     |
 | `orchestration-loop`               | Orchestrator.                                                                        |
 | `implementing-tasks`               | Implementer.                                                                         |
 | `reviewing-acceptance-criteria`    | Reviewer.                                                                            |
-| `researching`                      | All five non-reflector agents (caller contract + researcher's own rules).            |
+| `exercising-journeys`              | Tester; consulted by reviewer when dispatching for `[Journey]` AC.           |
+| `researching`                      | All five non-reflector, non-tester agents (caller contract + researcher's own rules). |
 | `reflecting-on-sessions`           | Reflector; consulted by orchestrator when crafting the reflector dispatch brief.     |
 
 ## Workflow at a glance
 
 1. `intake` — orchestrator receives the goal, picks a slug.
 2. `plan` — dispatches planner (initial mode) → writes `.plans/<slug>.md`
-   grouped into phases, with tiered (`[cheap]` / `[gate]`) AC per task and
-   `[gate]` regression AC per phase.
+   grouped into phases, with MoSCoW + cadence (`[Must|Should|Could]
+   [Fast|Full]`) AC per task and a `**Definition of Done:**` block per
+   phase (with `[Must] [Full]` regression checks plus optional
+   `[Journey]` user-flow checks driven by the tester).
 3. `approve` — orchestrator shows the plan to the user and negotiates until
    approved.
 4. For each phase, for each task: implementer → reviewer → one of
@@ -96,5 +104,6 @@ table.
 - `../amending-plans/SKILL.md` — `PLAN_WRONG` flow and planner revision mode.
 - `../implementing-tasks/SKILL.md` — implementer per-attempt protocol.
 - `../reviewing-acceptance-criteria/SKILL.md` — reviewer protocol.
+- `../exercising-journeys/SKILL.md` — tester protocol for `[Journey]` AC.
 - `../researching/SKILL.md` — when and how to dispatch the researcher.
 - `../reflecting-on-sessions/SKILL.md` — end-of-session retrospective protocol.

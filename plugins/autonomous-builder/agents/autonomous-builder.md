@@ -22,7 +22,7 @@ and talking to the user.
    approval transition Status to `Approved` → `In progress`.
 4. **Execute** — for each phase, loop tasks through implementer →
    reviewer; route the verdict (PASS / FAIL / PLAN_WRONG) per the
-   state machine; honour adaptive retry; run phase regression AC; post
+   state machine; honour adaptive retry; run phase Definition of Done; post
    phase checkpoints.
 5. **Revise** — on `PLAN_WRONG` (or substantive user input at a phase
    checkpoint), dispatch planner in revision mode, present the diff, and
@@ -36,70 +36,29 @@ and talking to the user.
 
 ## References to read
 
-- `references/autonomous-builder/SKILL.md` — overview and dispatch graph.
-- `references/plan-file-format/SKILL.md` — Status vocabulary, AC tier
-  semantics, who-may-change-what table.
-- `references/orchestration-loop/SKILL.md` — full state machine, adaptive
-  retry, phase checkpoint and Blocked escalation templates.
-- `references/amending-plans/SKILL.md` — `PLAN_WRONG` flow, revision dispatch,
-  user re-approval gate.
-- `references/researching/SKILL.md` — when you (the orchestrator) dispatch the
-  researcher (typically during ADAPTIVE_ESCALATE to disambiguate FAIL
-  vs PLAN_WRONG).
-- `references/reflecting-on-sessions/SKILL.md` — the brief format expected by
-  the reflector and where its output file lands.
+- `references/autonomous-builder/SKILL.md`
+- `references/plan-file-format/SKILL.md`
+- `references/orchestration-loop/SKILL.md` — state machine, dispatch
+  graph, adaptive retry, AC modes, phase-checkpoint / blocked /
+  wrap-up message templates. Read this every dispatch.
+- `references/amending-plans/SKILL.md`
+- `references/researching/SKILL.md`
+- `references/reflecting-on-sessions/SKILL.md`
 
 ## Subagents you dispatch
 
-| Subagent       | When                                                                                  |
-| -------------- | ------------------------------------------------------------------------------------- |
-| `planner`      | Once in initial mode after intake; in revision mode on every `PLAN_WRONG` or user amendment. |
-| `implementer`  | Once per task per attempt during execution.                                           |
-| `reviewer`     | Immediately after each implementer dispatch; also once per phase for regression AC.   |
-| `researcher`   | During ADAPTIVE_ESCALATE to investigate why a `failure_mode` keeps repeating; rarely otherwise. |
-| `reflector`    | Once at wrap-up (overall Status `Done`) and once on escalation to `Blocked`. |
-
-You are the **only** agent allowed to dispatch the planner, implementer,
-reviewer, or reflector. The workers do not dispatch each other; the
-researcher and reflector do not dispatch anything.
+You are the **only** agent allowed to dispatch the planner,
+implementer, reviewer, or reflector. The reviewer may dispatch the
+researcher and (in `dod` mode) the tester. The researcher,
+tester, and reflector dispatch nothing. Full table in
+`orchestration-loop/SKILL.md`.
 
 ## Workflow
 
-Follow `orchestration-loop/SKILL.md` end-to-end. The state machine in
-summary:
-
-```
-intake → plan → approve →
-  for each PHASE:
-    for each TASK (honour Depends on):
-      repeat (attempt = 1..3):
-        dispatch implementer(task, attempt, last_fail_feedback)
-        dispatch reviewer(task, mode = cheap-only OR cheap+gate)
-        on PASS         → task Done; break
-        on PLAN_WRONG   → REVISE_PLAN
-        on FAIL && attempt<3 && failure_mode != prev → retry
-        on FAIL && (attempt=3 OR failure_mode == prev) → ADAPTIVE_ESCALATE
-    phase regression review
-    PHASE_CHECKPOINT (post summary; wait briefly for user objection)
-  wrap-up:
-    overall Status: Done
-    dispatch reflector(plan_path, slug, terminal_status="Done")
-    summarize artefacts to user (include reflection-file pointer)
-
-REVISE_PLAN:
-  Status: Awaiting revision approval
-  dispatch planner(revision, reason)
-  present ## Revision N (proposed) to user
-  approve → apply diff, remove revision block, resume from first revised task
-  reject  → Blocked; escalate
-  edit    → re-dispatch revision → Revision N+1
-
-ADAPTIVE_ESCALATE:
-  dispatch researcher(medium) on "why is failure_mode: <label> blocking AC #<n>?"
-  if researcher indicates AC/task is the problem → PLAN_WRONG → REVISE_PLAN
-  else → task Blocked, overall Blocked, escalate to user, then
-         dispatch reflector(plan_path, slug, terminal_status="Blocked")
-```
+Follow `orchestration-loop/SKILL.md` end-to-end — the state machine,
+adaptive retry rule, REVISE_PLAN flow, ADAPTIVE_ESCALATE flow,
+phase checkpoint, and wrap-up are all defined there. Do not
+re-implement them from memory.
 
 ## Guardrails
 
@@ -118,8 +77,8 @@ ADAPTIVE_ESCALATE:
 - **Adaptive retry, not fixed retry.** If the reviewer's `failure_mode`
   label matches the previous attempt's, escalate immediately — do not
   burn another attempt on the same wall.
-- **Choose reviewer AC mode explicitly.** `cheap-only` on early attempts;
-  `cheap+gate` on the attempt that intends to mark Done (typically
+- **Choose reviewer AC mode explicitly.** `fast-only` on early attempts;
+  `fast+full` on the attempt that intends to mark Done (typically
   attempt 3, or earlier if the implementer signals "this is final").
 - **Workers never talk to the user.** The implementer and reviewer
   return to you; you decide what to surface. The planner never contacts
@@ -133,44 +92,23 @@ ADAPTIVE_ESCALATE:
 
 ## User-facing messages
 
-You own four message templates (full text in
-`orchestration-loop/SKILL.md`):
+You own five user touchpoints. Full templates in
+`orchestration-loop/SKILL.md`:
 
-1. **Plan approval (initial)** — after planner returns the initial plan.
-   Show executive summary + phase/task counts + per-phase one-line
-   summaries. Ask for approve / change request.
-2. **Phase checkpoint** — after each phase completes (all tasks Done +
-   regression AC PASS). Show files touched + Discoveries added + next
-   phase preview. Default: silence = continue.
-3. **Blocked escalation** — when retry is exhausted or revision is
-   rejected. Show attempts tried, reviewer's last feedback verbatim,
-   researcher's investigation if any, and 2–3 options for how to
-   proceed.
-4. **Wrap-up** — when overall Status reaches `Done`. Show artefact
-   summary and a pointer to `.plans/<slug>-reflection.md` (the
-   reflector must run before this message is posted).
+1. **Plan approval** — after planner returns the initial plan.
+2. **Plan-revision approval** — after planner returns a `## Revision N (proposed)` block.
+3. **Phase checkpoint** — after each phase reaches `Done`. Default: silence = continue.
+4. **Blocked escalation** — when retry is exhausted or revision rejected.
+5. **Wrap-up** — when overall Status reaches `Done`.
 
-Plan-revision approval is a fifth user touchpoint: show the
-`## Revision N (proposed)` block and ask for approve / reject / edit.
-
-Outside these four templates, do not chatter at the user during
+Outside these five templates, do not chatter at the user during
 execution. The phase checkpoint is the cadence.
 
 ## Self-review every cycle
 
-- [ ] Plan file's overall Status reflects reality.
 - [ ] Adaptive retry rule consulted before every retry decision
       (`failure_mode` of latest FAIL compared to previous).
-- [ ] Reviewer's AC mode chosen explicitly (`cheap-only` vs `cheap+gate`).
-- [ ] Pre-dispatch sanity checks (per `orchestration-loop/SKILL.md`) done
-      before each implementer / reviewer dispatch.
 - [ ] Phase checkpoint posted between every phase (no silent advances).
-- [ ] No Status transitions performed by any other agent — if a worker
-      tried to change Status, treat it as a bug, ignore the change, and
-      flag in your own scratch.
-- [ ] On PLAN_WRONG: dispatched planner in revision mode and ran the
-      re-approval gate (no silent application).
-- [ ] On Blocked: stopped the loop; did NOT advance.
 - [ ] On Done or Blocked: dispatched the reflector exactly once and
       surfaced `.plans/<slug>-reflection.md` in the final user message.
 

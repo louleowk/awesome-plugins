@@ -44,18 +44,31 @@ discovery; you may not dispatch any other agent.
 
 Follow `planning-tasks/SKILL.md` end-to-end. In summary:
 
+0. **Seed from repo memory if it exists** (per `planning-tasks/SKILL.md`
+   step 0). Resolve `/memories/repo/autonomous-builder.md` against the
+   target repo root, validate the magic header, re-`Read` each cited
+   file:line before seeding, and tag survivors
+   `[planner · <today> · seeded from repo memory]`.
 1. Restate the goal in one sentence; pick a kebab-case slug.
 2. Discovery — read repo root + target area; find sibling implementations.
-   Dispatch the researcher for anything broad.
+   Dispatch the researcher for anything broad. **Anything that's
+   already in the seeded Discoveries from step 0 doesn't need
+   re-researching** — reuse.
 3. Seed `## Discoveries` with what you learned (with `[planner · date]`
    tags and file:line citations).
 4. Write `## Context` (framing, not facts — facts go in Discoveries).
-5. Decompose into phases (coherent slices, ≤ ~5 tasks each, each with ≥1
-   `[gate]` phase-regression AC).
+5. Decompose into phases (coherent slices, ≤ ~5 tasks each, each with a
+   `**Definition of Done:**` block containing ≥1 `[Must] [Full]` AC).
+   If any phase's Definition of Done has a `[Journey]` AC, prepend an
+   "Environment" phase whose Definition of Done establishes the
+   runnable app (one-command bring-up + health check + seed data).
 6. Decompose phases into tasks (one logical concern each, ≤ ~1 hour of
    work, explicit `Depends on:`).
-7. Write ≥2 acceptance criteria per task, each tagged `[cheap]` or
-   `[gate]`, each naming a concrete command/file/behaviour.
+7. Write ≥2 acceptance criteria per task, each tagged with both a
+   priority (`[Must]` / `[Should]` / `[Could]`) and a cadence
+   (`[Fast]` / `[Full]`), each naming a concrete
+   command/file/behaviour. `[Journey]` AC are reserved for phase
+   Definition of Done blocks — never on a task.
 8. Set initial statuses (overall `Awaiting approval`; phases and tasks
    `Pending`).
 9. Return: file path, one-paragraph executive summary, phase/task counts.
@@ -96,7 +109,10 @@ Follow `amending-plans/SKILL.md`. In summary:
 - **No banned AC phrasings.** "looks good", "is clean", "works correctly",
   "well-structured", "no issues", "follows best practices". Reject in
   self-review before returning.
-- **No untagged AC.** Every AC must be `[cheap]` or `[gate]`.
+- **No untagged AC.** Every AC must have both a priority
+  (`[Must]` / `[Should]` / `[Could]`) and a cadence
+  (`[Fast]` / `[Full]` / `[Journey]`). `[Journey]` is only allowed
+  in `**Definition of Done:**` blocks.
 - **No silent status changes** to in-flight tasks. In revision mode you
   rewrite task blocks but the *new* tasks start at `Pending`; you don't
   reset a `Done` task to `Pending` unless you're explicitly replacing it.
@@ -108,8 +124,13 @@ Initial mode:
 - [ ] Slug is kebab-case and matches the file name.
 - [ ] `## Discoveries` has at least one sibling-implementation citation per
       "new thing being added" pattern.
-- [ ] Every phase has `**Phase regression AC:**` with ≥1 `[gate]` AC.
-- [ ] Every task has ≥2 AC, each tagged `[cheap]` or `[gate]`.
+- [ ] Every phase has `**Definition of Done:**` with ≥1 `[Must] [Full]` AC.
+- [ ] Every task has ≥2 AC, each tagged with both a priority
+      (`[Must]` / `[Should]` / `[Could]`) and a cadence
+      (`[Fast]` / `[Full]`). No `[Journey]` AC at task level.
+- [ ] If any phase's Definition of Done has a `[Journey]` AC, an
+      "Environment" phase exists earlier whose DoD establishes the
+      runnable app.
 - [ ] No banned phrasings anywhere in AC.
 - [ ] Dependencies (`Depends on:`) are explicit and acyclic.
 - [ ] Overall Status is `Awaiting approval`.

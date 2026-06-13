@@ -20,11 +20,24 @@ and its own agents, skills, hooks, and commands.
   `amazon-writing-style` skill.
 - **`plugins/autonomous-builder`** — autonomously plans, implements, and
   reviews multi-step work in a codebase. Ships an `autonomous-builder`
-  orchestrator agent plus `planner`, `implementer`, `reviewer`, and
-  `researcher` subagents and the `/autonomous-build <goal>` slash
-  command. Hardened for large or legacy codebases via a shared
-  `## Discoveries` log, tiered (cheap/gate) acceptance criteria,
-  adaptive retry, and first-class plan revision.
+  orchestrator agent plus `planner`, `implementer`, `reviewer`,
+  `researcher`, `reflector`, and `tester` subagents and three slash
+  commands: `/autonomous-build <goal>` (plan-and-execute),
+  `/autonomous-status` (list all plans with current state), and
+  `/autonomous-reflect` (cross-session trend analysis once you've
+  accumulated 3+ completed plans). Uses plain agile vocabulary (MoSCoW
+  priorities `[Must]` / `[Should]` / `[Could]` plus cadence `[Fast]` /
+  `[Full]` / `[Journey]`) for acceptance criteria, with a per-phase
+  **Definition of Done** that may include `[Journey]` AC exercised
+  against the running system by the `tester` agent on three surfaces:
+  **CLI** (binary + stdout/stderr/exit-code), **API** (HTTP +
+  status/headers/body + side-effect verification), or **web**
+  (Playwright + console-error budget). The reflector promotes durable
+  codebase facts to `/memories/repo/autonomous-builder.md` after each
+  successful plan; subsequent plans read those facts during initial
+  discovery, so the plugin gets sharper at *this* repo over time.
+  Hardened for large or legacy codebases via a shared `## Discoveries`
+  log, adaptive retry, and first-class plan revision.
 
 ## Install
 
@@ -71,10 +84,14 @@ and its own agents, skills, hooks, and commands.
         │   ├── planner.md
         │   ├── implementer.md
         │   ├── reviewer.md
-        │   └── researcher.md
+        │   ├── researcher.md
+        │   ├── reflector.md
+        │   └── tester.md
         ├── commands/
-        │   └── autonomous-build.md
-        └── skills/
+        │   ├── autonomous-build.md
+        │   ├── autonomous-reflect.md
+        │   └── autonomous-status.md
+        └── references/
             ├── autonomous-builder/SKILL.md
             ├── plan-file-format/SKILL.md
             ├── planning-tasks/SKILL.md
@@ -82,7 +99,9 @@ and its own agents, skills, hooks, and commands.
             ├── orchestration-loop/SKILL.md
             ├── implementing-tasks/SKILL.md
             ├── reviewing-acceptance-criteria/SKILL.md
-            └── researching/SKILL.md
+            ├── exercising-journeys/SKILL.md
+            ├── researching/SKILL.md
+            └── reflecting-on-sessions/SKILL.md
 ```
 
 ## Adding new plugins

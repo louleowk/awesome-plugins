@@ -1,12 +1,12 @@
 ---
 name: implementing-tasks
-description: Use this skill when the implementer agent is executing one task per attempt. It defines what to read first, when to dispatch the researcher, how to perform minimal edits with discipline, how to self-check with [cheap] AC, and how to hand off cleanly to the reviewer.
+description: Use this skill when the implementer agent is executing one task per attempt. It defines what to read first, when to dispatch the researcher, how to perform minimal edits with discipline, how to self-check with `[Fast]` AC, and how to hand off cleanly to the reviewer.
 ---
 
 # Implementing Tasks
 
 The implementer is invoked **once per task per attempt** by the
-orchestrator. It edits product code, runs cheap self-checks, updates the
+orchestrator. It edits product code, runs fast self-checks, updates the
 task's `**Status:**` and `## Discoveries`, and hands back to the
 orchestrator with an artefact list. It does **not** mark tasks `Done` and
 **never** talks to the user.
@@ -80,17 +80,26 @@ Update the task's `**Status:**` line in the plan file:
   way to make AC pass. If an AC fails because of an underlying bug, that's
   a real problem — surface it via the artefact list, not hide it.
 
-### 6. Self-check `[cheap]` AC
+### 6. Self-check `[Fast]` AC
 
-Run every `[cheap]` AC for this task yourself before handing off. The
+Run every `[Fast]` AC for this task yourself before handing off. The
 reviewer will run them again with fresh judgement, but failing them
 yourself means you're handing off broken work.
 
-Record exit codes / outputs as you go — you'll include them in the artefact
-list.
+- Run **`Must`-priority** `[Fast]` AC for sure — they're what the
+  reviewer will FAIL on.
+- Run **`Should`-priority** `[Fast]` AC too — a `Should` failure
+  doesn't FAIL the task, but the orchestrator surfaces WARNs at the
+  phase checkpoint, so you should know about them now.
+- **`Could`-priority** AC are informational; you may skip self-check.
 
-Do **NOT** run `[gate]` AC yourself — they're the reviewer's job at the
-final attempt. Running them now wastes time.
+Record exit codes / outputs as you go — you'll include them in the
+artefact list.
+
+Do **NOT** run `[Full]` AC yourself — they're the reviewer's job at
+the finalising attempt. Running them now wastes time. Do **NOT** run
+`[Journey]` AC — they only exist in phase Definition of Done blocks
+and are dispatched to the tester by the reviewer.
 
 ### 7. Append durable findings to `## Discoveries`
 
@@ -135,22 +144,22 @@ is your only output:
 - **Commands run (self-check):**
   - `pytest tests/test_foo.py::test_bar` → exit 0
   - `ruff check src/foo.py` → exit 0
-- **[cheap] AC self-check:**
-  - AC #1: PASS
-  - AC #2: PASS
+- **[Fast] AC self-check:**
+  - AC #1 [Must]   [Fast]: PASS
+  - AC #2 [Should] [Fast]: WARN (non-blocking, exit 1: "<one-line reason>")
 - **Discoveries appended:** 2 (see `## Discoveries`).
 - **Open notes for reviewer:** <one short line if anything's worth flagging — or "none">.
 
 Status set to: `Awaiting review`.
 ```
 
-If you couldn't make `[cheap]` AC pass yourself, still hand off — but flag
-it clearly:
+If you couldn't make a `Must`-priority `[Fast]` AC pass yourself,
+still hand off — but flag it clearly:
 
 ```markdown
-- **[cheap] AC self-check:**
-  - AC #1: PASS
-  - AC #2: FAIL — `pytest ... ::test_bar` exited 1: <one-line error>
+- **[Fast] AC self-check:**
+  - AC #1 [Must] [Fast]: PASS
+  - AC #2 [Must] [Fast]: FAIL — `pytest ... ::test_bar` exited 1: <one-line error>
 ```
 
 The reviewer will independently confirm and emit a FAIL verdict; the
@@ -214,7 +223,9 @@ silently try a fourth approach — return an honest FAIL.
 - [ ] Read only assigned task + Context + Discoveries (+ latest Review log on retry).
 - [ ] Dispatched researcher for anything broad or unfamiliar.
 - [ ] Edited the minimum number of files.
-- [ ] Ran all `[cheap]` AC and recorded exit codes.
+- [ ] Ran all `Must` and `Should` `[Fast]` AC and recorded exit codes.
+- [ ] Did NOT run `[Full]` AC (reviewer's job).
+- [ ] Did NOT run `[Journey]` AC (tester's job, dispatched via reviewer).
 - [ ] Appended durable findings to `## Discoveries`.
 - [ ] Set Status to `Awaiting review` (did NOT set Done).
 - [ ] Did NOT write to Review log.

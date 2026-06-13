@@ -39,8 +39,9 @@ make this AC pass?
 1. **AC is impossible as stated.** E.g. AC says "function `foo` returns
    `True` for empty input" but the function's existing callers depend on it
    returning `None` — passing this AC would break callers.
-2. **AC is mis-tagged.** Untagged AC, or `[cheap]` AC that actually requires
-   a full integration run.
+2. **AC is mis-tagged.** Untagged AC, single-tagged AC, AC tagged
+   `[Won't]`, or `[Fast]` AC that actually requires a full
+   integration run.
 3. **AC contains a destructive command** (`rm -rf`, `DROP TABLE`, `--force`,
    `--no-verify`, `git push -f`) that the reviewer refuses to run.
 4. **Implementation notes contradict Discoveries.** Notes say "edit
@@ -65,11 +66,11 @@ on. Append it to the Review log:
 
 ````markdown
 - Attempt N (YYYY-MM-DD): **PLAN_WRONG**
-  - **Trigger:** <one of: impossible AC | mis-tagged AC | destructive AC | notes-contradict-discoveries | bad dependency | scope-out-of-bounds | missing precondition>
+  - **Trigger:** <one of: impossible AC | mis-tagged AC | mis-placed AC | mixed-vocabulary | destructive AC | notes-contradict-discoveries | bad dependency | scope-out-of-bounds | missing precondition | missing-environment-phase | unharvested-research>
   - **Affected AC:** AC #<n>: "<verbatim AC text>"
   - **Reason:** <2–4 sentences. What did you try? What did you find? Why does the task as written not admit a passing implementation?>
   - **Evidence:** <file:line citations or Discovery references>
-  - **Suggested fix (optional):** <one short hint for the planner — e.g. "split into Task 2.3a (add config) + Task 2.3b (use it)", "drop AC #2; it duplicates Phase 1 regression AC", "needs prerequisite task to create `foo.json` first">
+  - **Suggested fix (optional):** <one short hint for the planner — e.g. "split into Task 2.3a (add config) + Task 2.3b (use it)", "drop AC #2; it duplicates Phase 1 Definition of Done", "needs prerequisite task to create `foo.json` first">
 ````
 
 The "Suggested fix" is advisory only — the planner decides.
@@ -111,8 +112,8 @@ The planner then:
    **Reasoning:** <new>
    **Implementation notes:** <new>
    **Acceptance criteria:**
-   - [ ] [cheap] <new>
-   - [ ] [gate]  <new>
+   - [ ] [Must] [Fast] <new>
+   - [ ] [Must] [Full] <new>
 
    **Review log:**
    - (carried over from before revision — paste prior log here verbatim)
@@ -153,7 +154,7 @@ checkpoint with a non-trivial amendment):
    - One question: "Approve revision <N>? (reply 'approve', 'reject', or
      describe further changes)."
 4. **Apply on approval.** Replace the affected task blocks in place with the
-   new ones from the Revision block. Update phase regression AC if the
+   new ones from the Revision block. Update phase Definition of Done if the
    revision changed it. Remove the `## Revision <N> (proposed)` block (the
    approved revision IS the new plan). Overall Status → `In progress`. Task
    Status of the first revised task → `Pending`. Resume the loop from there.
@@ -181,21 +182,21 @@ escalate" rule. When that fires, treat it like a soft `PLAN_WRONG`:
 ### Example 1 — FAIL (not PLAN_WRONG)
 
 > Task: "Add `--verbose` flag to `cli.py`."
-> AC #1 [cheap]: `python cli.py --verbose --help` exits 0 and output contains "verbose".
+> AC #1 [Must] [Fast]: `python cli.py --verbose --help` exits 0 and output contains "verbose".
 > Reviewer ran the command; exit code was 2 because implementer didn't add the flag to the argparse parser.
 > Verdict: **FAIL** (`failure_mode: argparse-missing-flag`). An implementation exists that would pass this AC.
 
 ### Example 2 — PLAN_WRONG (impossible AC)
 
 > Task: "Rename `cli.py` to `command_line.py` and update all callers."
-> AC #2 [gate]: "No references to `cli.py` anywhere in the repo after the rename."
+> AC #2 [Must] [Full]: "No references to `cli.py` anywhere in the repo after the rename."
 > Reviewer searched and found `docs/changelog.md` and `README.md` historically reference `cli.py` in the change history; rewriting those would falsify history.
 > Verdict: **PLAN_WRONG** (trigger: impossible AC). Suggested fix: "Tighten AC to 'No code-path references to `cli.py` (excluding `docs/`, `CHANGELOG.md`, and historical commit-message-style files)'."
 
 ### Example 3 — PLAN_WRONG (scope-out-of-bounds)
 
 > Task: "Add unit test for `Foo.bar()`."
-> AC #1 [cheap]: `pytest tests/test_foo.py::test_bar` exits 0.
+> AC #1 [Must] [Fast]: `pytest tests/test_foo.py::test_bar` exits 0.
 > Reviewer ran pytest; test failed because `Foo.bar()` itself has a bug — the test is correct but the implementation is wrong. Task description excludes touching `foo.py`.
 > Verdict: **PLAN_WRONG** (trigger: scope-out-of-bounds). Suggested fix: "Add prerequisite Task 'Fix bug in `Foo.bar()` for empty input case', then re-attempt this test task."
 
