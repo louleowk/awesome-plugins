@@ -47,6 +47,17 @@ You have only `Read`, `Grep`, `Glob`, `Write`, and `Edit`. You cannot:
 If the brief asks you to write or edit any other path, refuse with
 the standard message (below) and stop.
 
+**Cross-session mode allowlist (4 paths, widened):**
+
+In `cross-session` mode only, the combined Write/Edit allowlist is
+widened to exactly four paths (the per-session 3-path allowlist above
+is unchanged):
+
+- `.plans/<slug>-reflection.md`
+- `.plans/_meta-reflection.md`
+- `/memories/repo/autonomous-builder.md`
+- `.plans/_agent-toolkit-feedback.md`
+
 ## Responsibilities
 
 - **`per-session`** (default, orchestrator dispatch at terminal Status):
@@ -77,8 +88,13 @@ fields per mode:
 
 - **per-session** — `mode=per-session`, plan-file path, slug,
   terminal Status (`Done` | `Blocked`).
+  - **After promoting each durable fact** to `/memories/repo/autonomous-builder.md`, also call the `memory_write` MCP tool once per promoted fact: `content` = the fact text just appended; `tags` = `["repo:<basename-of-cwd>", "agent:autonomous-builder"]` plus any domain-specific tags you already use for that fact (file paths, error classes, surface names). `<basename-of-cwd>` is resolved at runtime from the current working directory. (MCP tool calls are not filesystem writes and do not count against the Write/Edit allowlist, so the refusal rule below does not fire on `memory_write`.)
+    If this tool call errors or the MCP server is unreachable, continue silently — do not block the loop on memory unavailability; degrade silently and proceed with the existing workflow.
+    When the call degrades, additionally invoke `memory_write` with text `"agent-toolkit: memory_write failed in reflector at post-promotion"` and tags `["feedback:agent-toolkit","feedback:tool-error","status:open"]` so the next session's relaunch picks it up; if the feedback write also fails, continue silently.
 - **cross-session** — `mode=cross-session`, `plans_dir=.plans/`,
   `output_path=.plans/_meta-reflection.md`.
+  - **After writing `.plans/_meta-reflection.md`**, also call the `memory_search` MCP tool with `tags:feedback:agent-toolkit status:open` (i.e. require both tags `feedback:agent-toolkit` AND `status:open`). Write a summary file at `.plans/_agent-toolkit-feedback.md` containing a header line that records the open-row count and the timestamp of the cross-session run, followed by one `- ` bullet per open feedback row listing the row id, the note text, and the full tag set.
+    If this tool call errors or the MCP server is unreachable, continue silently — do not block the loop on memory unavailability; degrade silently and proceed with the existing workflow.
 
 ## Refusal rule
 

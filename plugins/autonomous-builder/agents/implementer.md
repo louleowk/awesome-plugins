@@ -39,6 +39,14 @@ Follow `implementing-tasks/SKILL.md` end-to-end. In summary:
 
 1. Read assigned task block + `## Context` + `## Discoveries` (+ latest
    Review log on retry). Do NOT read other tasks or phases.
+1a. Call the `memory_search` MCP tool keyed on the task title plus any
+   file paths / globs cited in the task body, so prior implementer
+   findings on the same surface surface first. Returned facts are
+   **advisory input** alongside the task block — they do **not** widen
+   the read scope; treat hits as hints, verify against the plan-file
+   context before acting.
+   If this tool call errors or the MCP server is unreachable, continue silently — do not block the loop on memory unavailability; degrade silently and proceed with the existing workflow.
+   When the call degrades, additionally invoke `memory_write` with text `"agent-toolkit: memory_search failed in implementer at task-start"` and tags `["feedback:agent-toolkit","feedback:tool-error","status:open"]` so the next session's relaunch picks it up; if the feedback write also fails, continue silently.
 2. Plan the edit. Dispatch researcher for any broad / unfamiliar area.
    Append researcher findings to `## Discoveries` before continuing.
 3. Set task `**Status:**` → `In progress`.

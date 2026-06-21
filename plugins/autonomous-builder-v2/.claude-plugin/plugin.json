@@ -1,0 +1,24 @@
+{
+  "name": "autonomous-builder",
+  "version": "0.5.0",
+  "description": "Design-first autonomous builder. A single orchestrator runs a design gate (the only pre-code approval), projects a plan from the approved design, then executes each task through a task-coordinator that owns an implementer -> tester -> reviewer inner loop with two independent retry budgets (implementation bounces and review bounces, 5 each). The implementer owns green tests; the tester inspects thoroughness and adds missing tests; the reviewer judges against the per-task ledger. A senior designer holds office hours for the task-coordinator and revises the design/plan on PLAN_WRONG. A researcher maintains a shared, list-based per-feature knowledge base (check-first, append-with-dedupe). At terminal states a reflector writes a developer-facing retrospective and a per-feature scorecard (no runtime memory layer). Built from the v2 design in plugins/autonomous-builder/docs/design-direction.md.",
+  "author": {
+    "name": "louleowk",
+    "url": "https://github.com/louleowk"
+  },
+  "repository": "https://github.com/louleowk/awesome-plugins",
+  "agents": [
+    "./agents/autonomous-builder.md",
+    "./agents/designer.md",
+    "./agents/task-coordinator.md",
+    "./agents/implementer.md",
+    "./agents/tester.md",
+    "./agents/reviewer.md",
+    "./agents/researcher.md",
+    "./agents/reflector.md"
+  ],
+  "commands": [
+    "./commands/autonomous-build.md",
+    "./commands/autonomous-status.md"
+  ]
+}

@@ -13,6 +13,12 @@ You inherit all tools. You may dispatch the `researcher` subagent for AC
 that span beyond the directly-edited files; you may not dispatch any
 other agent.
 
+Note on MCP tool calls: the filesystem-tool inheritance above governs
+`Read` / `Grep` / `Bash` / etc. MCP tool calls (e.g. `memory_search`,
+`memory_write`) are exempt from any agent-level tool restriction —
+they are governed by their own silent-degradation contract documented
+in the Workflow section below, and may be called freely.
+
 ## Responsibilities
 
 1. Read the assigned task block + `## Context` + `## Discoveries` —
@@ -46,6 +52,14 @@ Follow `reviewing-acceptance-criteria/SKILL.md` end-to-end. In summary:
 
 1. Read task block + `## Context` + `## Discoveries`. Do NOT read the
    implementer's reasoning or scratch.
+1a. Call the `memory_search` MCP tool keyed on the task title plus any
+   file paths cited in the task body, so prior reviewer findings tagged
+   with the touched file paths surface first. Returned facts are
+   **advisory input only** — they may inform but do **not** override the
+   AC verification that follows; verify against the plan-file AC before
+   adjusting any verdict.
+   If this tool call errors or the MCP server is unreachable, continue silently — do not block the loop on memory unavailability; degrade silently and proceed with the existing workflow.
+   When the call degrades, additionally invoke `memory_write` with text `"agent-toolkit: memory_search failed in reviewer at pre-verdict"` and tags `["feedback:agent-toolkit","feedback:tool-error","status:open"]` so the next session's relaunch picks it up; if the feedback write also fails, continue silently.
 2. **Validate AC well-formedness first.** Any AC that is untagged,
    uses banned phrasing, or contains a destructive command → emit
    `PLAN_WRONG` immediately without running anything.

@@ -124,6 +124,16 @@ action is intake:
    > `.plans/<slug>.md`, then bring the plan back for your approval before
    > any code changes."
 4. Dispatch the planner in initial mode.
+   - Before dispatching, call the `memory_search` MCP tool against the
+     restated goal text (from step 1) with `limit: 5` to surface any
+     prior session facts seeded for this slug or topic. If any non-empty
+     hits come back, include them verbatim in the plan-approval message
+     (step 5) under a `Prior memory:` sub-bullet so the user can
+     sanity-check the carried context before approving.
+   - If this tool call errors or the MCP server is unreachable, continue
+     silently — do not block the loop on memory unavailability;
+     degrade silently and proceed with the existing workflow.
+     When the call degrades, additionally invoke `memory_write` with text `"agent-toolkit: memory_search failed in autonomous-builder at intake"` and tags `["feedback:agent-toolkit","feedback:tool-error","status:open"]` so the next session's relaunch picks it up; if the feedback write also fails, continue silently.
 5. When the planner returns, present the plan for approval per the
    template in `orchestration-loop/SKILL.md`.
 
