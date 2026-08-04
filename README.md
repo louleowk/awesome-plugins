@@ -38,6 +38,16 @@ and its own agents, skills, hooks, and commands.
   discovery, so the plugin gets sharper at *this* repo over time.
   Hardened for large or legacy codebases via a shared `## Discoveries`
   log, adaptive retry, and first-class plan revision.
+- **`plugins/task-craftsman`** — a senior-developer task worker for a
+  single coding task. Ships one `task-craftsman` agent that triages the
+  work, gates for design approval **only when the task is non-trivial**,
+  implements it, and covers every changed behaviour with tests before
+  reporting done. Its judgement lives in reference skills for
+  `solid-design`, `clean-code`, `complete-code`, `testing-changed-code`,
+  `refactoring-safely`, and `triaging-and-planning`. The doctrine skills
+  are deliberately reusable: `autonomous-builder`'s `implementer` and
+  `tester` read them when this plugin is installed and fall back to an
+  inline digest when it is not.
 
 ## Install
 
@@ -57,7 +67,7 @@ and its own agents, skills, hooks, and commands.
     │   ├── .claude-plugin/plugin.json
     │   ├── agents/
     │   │   └── plugin-creator.md
-    │   └── skills/
+    │   └── references/
     │       ├── plugin-creator/SKILL.md
     │       ├── writing-agents/SKILL.md
     │       ├── writing-hooks/SKILL.md
@@ -67,7 +77,7 @@ and its own agents, skills, hooks, and commands.
     │   ├── .claude-plugin/plugin.json
     │   ├── agents/
     │   │   └── amazon-doc-writer.md
-    │   └── skills/
+    │   └── references/
     │       ├── amazon-doc-writer/SKILL.md
     │       ├── amazon-writing-style/SKILL.md
     │       ├── writing-prfaq/SKILL.md
@@ -77,32 +87,48 @@ and its own agents, skills, hooks, and commands.
     │       ├── writing-coe/SKILL.md
     │       ├── writing-op1-narrative/SKILL.md
     │       └── writing-wbr-narrative/SKILL.md
-    └── autonomous-builder/
+    ├── autonomous-builder-v2/          # published as `autonomous-builder`
+    │   ├── .claude-plugin/plugin.json
+    │   ├── agents/
+    │   │   ├── autonomous-builder.md
+    │   │   ├── designer.md
+    │   │   ├── task-coordinator.md
+    │   │   ├── implementer.md
+    │   │   ├── tester.md
+    │   │   ├── reviewer.md
+    │   │   ├── researcher.md
+    │   │   └── reflector.md
+    │   ├── commands/
+    │   │   ├── autonomous-build.md
+    │   │   └── autonomous-status.md
+    │   └── references/
+    │       ├── designing/SKILL.md
+    │       ├── feature-file-format/SKILL.md
+    │       ├── orchestration-loop/SKILL.md
+    │       ├── task-coordination/SKILL.md
+    │       ├── reviewing/SKILL.md
+    │       ├── researching/SKILL.md
+    │       └── reflecting-on-sessions/SKILL.md
+    └── task-craftsman/
         ├── .claude-plugin/plugin.json
         ├── agents/
-        │   ├── autonomous-builder.md
-        │   ├── planner.md
-        │   ├── implementer.md
-        │   ├── reviewer.md
-        │   ├── researcher.md
-        │   ├── reflector.md
-        │   └── tester.md
-        ├── commands/
-        │   ├── autonomous-build.md
-        │   ├── autonomous-reflect.md
-        │   └── autonomous-status.md
+        │   └── task-craftsman.md
         └── references/
-            ├── autonomous-builder/SKILL.md
-            ├── plan-file-format/SKILL.md
-            ├── planning-tasks/SKILL.md
-            ├── amending-plans/SKILL.md
-            ├── orchestration-loop/SKILL.md
-            ├── implementing-tasks/SKILL.md
-            ├── reviewing-acceptance-criteria/SKILL.md
-            ├── exercising-journeys/SKILL.md
-            ├── researching/SKILL.md
-            └── reflecting-on-sessions/SKILL.md
+            ├── task-craftsman/SKILL.md
+            ├── triaging-and-planning/SKILL.md
+            ├── solid-design/SKILL.md
+            ├── clean-code/SKILL.md
+            ├── complete-code/SKILL.md
+            ├── testing-changed-code/SKILL.md
+            └── refactoring-safely/SKILL.md
 ```
+
+Plugins in this collection put their skills under `references/` rather
+than the auto-loaded `skills/`, because each skill is pulled in
+deterministically by an agent prompt's "References to read" section rather
+than by Claude's skill picker. Consequently `plugin.json` lists only
+`agents` and `commands`.
+
 
 ## Adding new plugins
 

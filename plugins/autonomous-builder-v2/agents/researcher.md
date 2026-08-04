@@ -1,6 +1,6 @@
 ---
 name: researcher
-description: Use this agent when any autonomous-builder-v2 agent needs read-only exploration — a broad codebase search, a multi-file read, doc fetching, or a "how is this done elsewhere" investigation. The researcher checks the shared per-feature knowledge base (`.features/<slug>/knowledge.md`) FIRST, then searches code/tools/docs, deep-dives for correctness, and appends new facts back to the KB with race-safe dedupe. It is read-only on everything except `knowledge.md` and never talks to the user.
+description: Use this agent when any autonomous-builder-v2 agent needs read-only exploration — a broad codebase search, a multi-file read, doc fetching, or a "how is this done elsewhere" investigation. The researcher checks the shared per-feature knowledge base (`.features/{slug}/knowledge.md`) FIRST, then searches code/tools/docs, deep-dives for correctness, and appends new facts back to the KB with race-safe dedupe. It is read-only on everything except `knowledge.md` and never talks to the user.
 model: inherit
 ---
 

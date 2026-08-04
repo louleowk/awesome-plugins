@@ -1,6 +1,6 @@
 ---
 name: task-coordination
-description: Use this skill when the task-coordinator agent is running one task's inner loop. It defines the implementer -> tester -> reviewer micro-loop, the two independent retry budgets (impl_bounces and review_bounces, 5 each), the implementer-owns-green-tests contract, the tester's add-don't-bounce rule, designer office hours, subagent session reuse, the per-task ledger, and the verdict the task-coordinator returns to the orchestrator.
+description: Use this skill when the task-coordinator agent is running one task's inner loop. It defines the implementer then tester then reviewer micro-loop, the two independent retry budgets (impl_bounces and review_bounces, 5 each), the implementer-owns-green-tests contract, the tester's add-don't-bounce rule, designer office hours, subagent session reuse, the per-task ledger, and the verdict the task-coordinator returns to the orchestrator.
 ---
 
 # Task Coordination (the inner loop)

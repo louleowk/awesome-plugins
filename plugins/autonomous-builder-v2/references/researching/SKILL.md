@@ -1,6 +1,6 @@
 ---
 name: researching
-description: Use this skill on both sides of a researcher dispatch in autonomous-builder-v2. Any agent may dispatch the researcher; the researcher maintains the shared, list-based per-feature knowledge base (`.features/<slug>/knowledge.md`) with a check-first, append-with-dedupe contract, and answers with cited evidence. Deep-dive is the default — shallow answers defeat the purpose.
+description: Use this skill on both sides of a researcher dispatch in autonomous-builder-v2. Any agent may dispatch the researcher; the researcher maintains the shared, list-based per-feature knowledge base (`.features/{slug}/knowledge.md`) with a check-first, append-with-dedupe contract, and answers with cited evidence. Deep-dive is the default — shallow answers defeat the purpose.
 ---
 
 # Researching (shared knowledge base)

@@ -1,6 +1,6 @@
 ---
 name: feature-file-format
-description: Use this skill whenever any autonomous-builder-v2 agent reads or writes anything under `.features/<slug>/`. It defines the canonical layout and structure for the design doc, the projected plan, the per-task ledgers, the shared knowledge base, the scorecard, and the reflection — plus the status vocabulary and the who-may-change-what rules that keep eight agents coordinated through plain markdown.
+description: Use this skill whenever any autonomous-builder-v2 agent reads or writes anything under `.features/{slug}/`. It defines the canonical layout and structure for the design doc, the projected plan, the per-task ledgers, the shared knowledge base, the scorecard, and the reflection — plus the status vocabulary and the who-may-change-what rules that keep eight agents coordinated through plain markdown.
 ---
 
 # Feature File Format

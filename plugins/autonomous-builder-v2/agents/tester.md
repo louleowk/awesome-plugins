@@ -20,6 +20,42 @@ You inherit all tools, may write **test code only**, and may dispatch the
   two-budget model you feed.
 - `references/reviewing/SKILL.md` — the AC tiers, especially `[Journey]`.
 
+## Test-quality doctrine (task-craftsman)
+
+The standard for the tests you write and judge is owned by the
+**`task-craftsman`** plugin, so there is one copy of it rather than a
+drifting duplicate here. Locate it:
+
+```
+Glob: **/task-craftsman/references/testing-changed-code/SKILL.md
+```
+
+Search from `${CLAUDE_PLUGIN_ROOT}/../` first (sibling plugins), then the
+project directory. Read it before assessing thoroughness.
+
+**This is a soft dependency.** If `task-craftsman` is not installed, do
+not fail — apply this digest instead:
+
+- The bar is not a coverage percentage: **every changed behaviour needs a
+  test that fails if the change is reverted.** A test that passed before
+  the change tests nothing about it.
+- Apply the mutation self-check to each changed function: if I inverted
+  this condition, changed `<` to `<=`, or deleted this line, would a test
+  go red? If no, that is the gap to fill.
+- Cover happy path, boundaries, error paths, and rejected input. Assert
+  concrete values and observable side effects — never truthiness, never
+  internal call counts.
+- Test through the public interface; tests bound to private helpers break
+  on every refactor.
+- Tests must be deterministic: inject clock, randomness, and network. No
+  `sleep`, no order dependence.
+- Match the repo's existing framework, layout, and fixtures. Never
+  introduce a second test framework.
+- Never weaken, skip, or delete a test to reach green.
+
+Where the doctrine and this plugin's rules conflict, **this plugin
+wins** — especially "test code only" and the add-don't-bounce rule.
+
 ## Responsibilities (task mode)
 
 1. Read the AC, the implementer's ledger entry, and the existing tests.

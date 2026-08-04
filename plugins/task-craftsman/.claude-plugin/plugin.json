@@ -1,0 +1,13 @@
+{
+  "name": "task-craftsman",
+  "version": "0.1.0",
+  "description": "A senior-developer task worker. Given one task, it triages complexity, plans and designs only when the work is non-trivial, implements it, and writes tests that cover every line it changed. Its judgement is driven by explicit reference skills for SOLID design, clean code, code completeness, testing changed code, and safe refactoring. Standalone, but its doctrine skills are also consumed by the autonomous-builder implementer and tester.",
+  "author": {
+    "name": "louleowk",
+    "url": "https://github.com/louleowk"
+  },
+  "repository": "https://github.com/louleowk/awesome-plugins",
+  "agents": [
+    "./agents/task-craftsman.md"
+  ]
+}

@@ -19,9 +19,15 @@
     },
     {
       "name": "autonomous-builder",
-      "version": "0.5.0",
+      "version": "0.6.0",
       "source": "./plugins/autonomous-builder-v2",
-      "description": "Design-first autonomous builder. A single orchestrator runs a design gate (the only pre-code approval), projects a plan from the approved design, then executes each task through a task-coordinator that owns an implementer -> tester -> reviewer inner loop with two independent retry budgets (5 each). The implementer owns green tests; the tester inspects thoroughness and adds missing tests; the reviewer judges against a per-task ledger. A senior designer holds office hours and revises on PLAN_WRONG. A researcher maintains a shared, list-based per-feature knowledge base. At terminal states a reflector writes a developer-facing retrospective plus a per-feature scorecard (no runtime memory layer)."
+      "description": "Design-first autonomous builder. A single orchestrator runs a design gate (the only pre-code approval), projects a plan from the approved design, then executes each task through a task-coordinator that owns an implementer -> tester -> reviewer inner loop with two independent retry budgets (5 each). The implementer owns green tests; the tester inspects thoroughness and adds missing tests; the reviewer judges against a per-task ledger. A senior designer holds office hours and revises on PLAN_WRONG. A researcher maintains a shared, list-based per-feature knowledge base. At terminal states a reflector writes a developer-facing retrospective plus a per-feature scorecard (no runtime memory layer). The implementer and tester soft-depend on the task-craftsman plugin's code-quality doctrine, with an inline fallback digest."
+    },
+    {
+      "name": "task-craftsman",
+      "version": "0.1.0",
+      "source": "./plugins/task-craftsman",
+      "description": "A senior-developer task worker. Given one task, it triages complexity, plans and designs only when the work is non-trivial, implements it, and writes tests that cover every line it changed. Its judgement is driven by explicit reference skills for SOLID design, clean code, code completeness, testing changed code, and safe refactoring. Standalone, but its doctrine skills are also consumed by the autonomous-builder implementer and tester."
     }
   ]
 }
